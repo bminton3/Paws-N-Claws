@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'adsIGuess.dart';
+import 'videoPlayer.dart';
 
 String dropdownAge = '0-6 months';
 
@@ -85,7 +85,7 @@ class DogAgeDropDownState extends State<DogAgeDropDown> {
       onPressed: (){
         Navigator.of(context).push(
           MaterialPageRoute<void>(
-            builder: (BuildContext context) => new AdsIGuess(),
+            builder: (BuildContext context) => new VideoPlayer(),
           ),
         );
       },

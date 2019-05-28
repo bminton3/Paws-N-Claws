@@ -10,6 +10,18 @@ import 'ageDropDown.dart';
 
 void main() => runApp(MyApp());
 
+//======= Colors ========
+// Colors.white for specific named colors
+// Color(0xhex) for custom colors
+
+// 0xFF65CAE0 - light blue?
+// 0xFFA2CAC9 - teal?
+// 0xFFD9DDC5 - tan
+// 0xFFEB822F - orange
+// 0xFFF26600 - bright orange
+// 0xFF694533 - brown
+// the first 2 digits are transparency.
+
 // TODO naming routes. May be needed later
 /*void main() {
   runApp(MaterialApp(
@@ -38,7 +50,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 class PawsAndClawsState extends State<PawsAndClaws> {
   // TODO replace these images with the images Joe sent me
 //  final List<String> _petsUrls = [
@@ -55,7 +66,8 @@ class PawsAndClawsState extends State<PawsAndClaws> {
     'assets/Hamster.png',
     'assets/Reptile.png',
     'assets/Fish.png',
-    'assets/Other 1.png'];
+    'assets/Other.png'
+  ];
 
   final List<Text> _dogBreeds = [
     Text("English Bulldog"),
@@ -67,12 +79,11 @@ class PawsAndClawsState extends State<PawsAndClaws> {
   // an instance variable's value to work
   double _age = 1;
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Paws N\' Claws'),
+        title: Text('What kind of best friend do you have?'),
       ),
       body: _buildPetIcons(context),
     );
@@ -83,36 +94,45 @@ class PawsAndClawsState extends State<PawsAndClaws> {
   // TODO implement OrientationBuilder
   Widget _buildPetIcons(BuildContext context) {
     return Container(
-      // this indigo has a sort of authoritative feeling
-        decoration: BoxDecoration(color: Colors.indigo[100]),
+        // this indigo has a sort of authoritative feeling
+        decoration: BoxDecoration(color: Color(0xAF694533)),
         child: Center(
             child: Container(
-              margin: const EdgeInsets.all(10.0),
-              color: Colors.cyan[600],
-              // ipad 6's logical resolution is 768 x 1024 px
-              // width and height set to 75% of screen size
-              width: MediaQuery.of(context).size.width * 0.75,
-              height: MediaQuery.of(context).size.height * 0.75,
-              child: _buildTappableButtons(context),
+          decoration: BoxDecoration(
+              color: Color(0xAF65CAE0),
+              borderRadius: new BorderRadius.only(
+                  topLeft: const Radius.circular(40.0),
+                  topRight: const Radius.circular(40.0),
+                  bottomLeft: const Radius.circular(40.0),
+                  bottomRight: const Radius.circular(40.0))),
+          margin: const EdgeInsets.all(10.0),
+
+          // ipad 6's logical resolution is 768 x 1024 px
+          // width and height set to 75% of screen size
+          width: MediaQuery.of(context).size.width * 0.75,
+          height: MediaQuery.of(context).size.height * 0.75,
+          child: _buildTappableButtons(context),
         )));
   }
 
+  /**
+   * TODO need to add text above the buttons but columns are fucking impossible
+   */
   Widget _buildTappableButtons(BuildContext context) {
     // TODO we may not want a GridView because it's scrollable. May be fun for the users, though
     return GridView.count(
         crossAxisCount: 2,
-        padding: const EdgeInsets.all(75.0),
+        padding: const EdgeInsets.all(55.0),
         mainAxisSpacing: 20.0,
         crossAxisSpacing: 20.0,
+        shrinkWrap: true,
         children: _pets.map((String url) {
-          return GridTile(
+          return GridTile( // doesn't have size
             child: GestureDetector(
               child: Container(
                 child: Image(
                   image: AssetImage(url),
-                  fit: BoxFit.fill,
-                  width: MediaQuery.of(context).size.width * 0.10,
-                  height: MediaQuery.of(context).size.width * 0.25,
+                  fit: BoxFit.scaleDown,
                 ),
               ),
               // TODO there's gotta be a better way to do this
@@ -188,13 +208,18 @@ class PawsAndClawsState extends State<PawsAndClaws> {
           print(newValue);
         });
       },
-      items: <String>['0-6 months', '6 months to a year', '1 - 2 years', '2 - 10 years', 'older']
-        .map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
+      items: <String>[
+        '0-6 months',
+        '6 months to a year',
+        '1 - 2 years',
+        '2 - 10 years',
+        'older'
+      ].map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
       value: dropdownAge,
     );
   }
@@ -203,8 +228,6 @@ class PawsAndClawsState extends State<PawsAndClaws> {
 // ======== Globals =============ß
 // main stateful widget
 class PawsAndClaws extends StatefulWidget {
-
-
   @override
   PawsAndClawsState createState() => PawsAndClawsState();
 }
