@@ -51,15 +51,7 @@ class MyApp extends StatelessWidget {
 }
 
 class PawsAndClawsState extends State<PawsAndClaws> {
-  // TODO replace these images with the images Joe sent me
-//  final List<String> _petsUrls = [
-//    'https://www.akc.org/wp-content/themes/akc/component-library/assets/img/welcome.jpg',
-//    'https://img.purch.com/w/660/aHR0cDovL3d3dy5saXZlc2NpZW5jZS5jb20vaW1hZ2VzL2kvMDAwLzEwNC84MTkvb3JpZ2luYWwvY3V0ZS1raXR0ZW4uanBn',
-//    'https://co0069yjui-flywheel.netdna-ssl.com/wp-content/uploads/2017/08/Home-lizard-1000x520.jpg',
-//    'https://images.unsplash.com/photo-1522720833375-9c27ffb02a5e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80',
-//    'https://cdn.omlet.co.uk/images/originals/hamsters-make-great-pets.jpg',
-//    'https://images-na.ssl-images-amazon.com/images/I/51lh93vBeRL._SY679_.jpg',
-//  ];
+
   final List<String> _pets = [
     'assets/Dog.png',
     'assets/Cat.png',
@@ -75,6 +67,7 @@ class PawsAndClawsState extends State<PawsAndClaws> {
     Text("German Shepard"),
     Text("Black Labrador")
   ];
+
   // Widgets only get rebuilt when there is a change in its state. Slider had to set
   // an instance variable's value to work
   double _age = 1;
