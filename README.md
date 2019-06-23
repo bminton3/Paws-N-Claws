@@ -2,4 +2,4 @@
 
 Paws N Claws
 
-![alt text](https://github.com/bminton3/Paws-N-Claws/blob/master/assets/pawsNClawsFirst.png)
+![alt text](https://github.com/bminton3/Paws-N-Claws/blob/master/assets/pawsNClawsFirst.jpg)
