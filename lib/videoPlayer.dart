@@ -6,49 +6,110 @@ import 'package:video_player/video_player.dart';
 class VideoPlayer extends StatefulWidget {
   @override
   createState() => new VideoPlayerState();
-
-
 }
 
 class VideoPlayerState extends State<VideoPlayer> {
   TargetPlatform _platform;
   VideoPlayerController _videoPlayerController1;
-  VideoPlayerController _videoPlayerController2;
   ChewieController _chewieController;
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Sample Video"),
-      ),
       body: Container(
-        padding: EdgeInsets.symmetric(
-          vertical: 16.0,
-          horizontal: 16.0,
-        ),
-        child: Center(
-          child: Chewie(
-            controller: _chewieController,
-          ),
+        color: Color(0xAF65CAE0),
+        child: Row(
+          children: [
+            Container(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 180,
+                  height: 60,
+                  child: CupertinoButton(
+                    color: Color(0xFFA2CAC9),
+                    padding: EdgeInsets.all(5.0),
+                    child: Text(
+                      'Potty Training',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    onPressed: buttonPress,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(5.0)),
+                SizedBox(
+                  width: 180,
+                  height: 60,
+                  child: CupertinoButton(
+                    color: Color(0xFFA2CAC9),
+                    padding: EdgeInsets.all(5.0),
+                    child: Text(
+                      'Tricks',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    onPressed: buttonPress,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(5.0)),
+                SizedBox(
+                  width: 180,
+                  height: 60,
+                  child: CupertinoButton(
+                    color: Color(0xFFA2CAC9),
+                    padding: EdgeInsets.all(5.0),
+                    child: Text(
+                      'Nutrition',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    onPressed: buttonPress,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(5.0)),
+                SizedBox(
+                  width: 180,
+                  height: 60,
+                  child: CupertinoButton(
+                    color: Color(0xFFA2CAC9),
+                    padding: EdgeInsets.all(5.0),
+                    child: Text(
+                      'Socialization',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    onPressed: buttonPress,
+                  ),
+                ),
+              ],
+            )),
+            Expanded(
+              child: Container(
+                padding: new EdgeInsets.all(32),
+                child: Center(
+                  child: Chewie(
+                    controller: _chewieController,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
+  void buttonPress() {
+    print("This button will do something later");
+  }
+
   @override
   void initState() {
     super.initState();
-    _videoPlayerController1 = VideoPlayerController.network(
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4');
-    _videoPlayerController2 = VideoPlayerController.network(
-        'https://www.sample-videos.com/video123/mp4/480/asdasdas.mp4');
+    _videoPlayerController1 = VideoPlayerController.asset('assets/potty.mp4');
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController1,
       aspectRatio: 3 / 2,
-      autoPlay: true,
-      looping: true,
+      autoPlay: false,
+      looping: false,
       // Try playing around with some of these other options:
 
       // showControls: false,
@@ -68,9 +129,7 @@ class VideoPlayerState extends State<VideoPlayer> {
   @override
   void dispose() {
     _videoPlayerController1.dispose();
-    _videoPlayerController2.dispose();
     _chewieController.dispose();
     super.dispose();
   }
-
 }

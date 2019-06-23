@@ -51,13 +51,9 @@ class MyApp extends StatelessWidget {
 }
 
 class PawsAndClawsState extends State<PawsAndClaws> {
-
   final List<String> _pets = [
     'assets/Dog.png',
     'assets/Cat.png',
-    'assets/Hamster.png',
-    'assets/Reptile.png',
-    'assets/Fish.png',
     'assets/Other.png'
   ];
 
@@ -75,9 +71,6 @@ class PawsAndClawsState extends State<PawsAndClaws> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('What kind of best friend do you have?'),
-      ),
       body: _buildPetIcons(context),
     );
   }
@@ -88,11 +81,14 @@ class PawsAndClawsState extends State<PawsAndClaws> {
   Widget _buildPetIcons(BuildContext context) {
     return Container(
         // this indigo has a sort of authoritative feeling
-        decoration: BoxDecoration(color: Color(0xAF694533)),
+        decoration: BoxDecoration(color: Color(0xAF65CAE0)),
         child: Center(
             child: Container(
           decoration: BoxDecoration(
-              color: Color(0xAF65CAE0),
+              color: Color(0xFFA2CAC9),
+              border: Border.all(
+                width: 1,
+              ),
               borderRadius: new BorderRadius.only(
                   topLeft: const Radius.circular(40.0),
                   topRight: const Radius.circular(40.0),
@@ -103,7 +99,7 @@ class PawsAndClawsState extends State<PawsAndClaws> {
           // ipad 6's logical resolution is 768 x 1024 px
           // width and height set to 75% of screen size
           width: MediaQuery.of(context).size.width * 0.75,
-          height: MediaQuery.of(context).size.height * 0.75,
+          height: MediaQuery.of(context).size.height * 0.55,
           child: _buildTappableButtons(context),
         )));
   }
@@ -113,26 +109,37 @@ class PawsAndClawsState extends State<PawsAndClaws> {
    */
   Widget _buildTappableButtons(BuildContext context) {
     // TODO we may not want a GridView because it's scrollable. May be fun for the users, though
-    return GridView.count(
-        crossAxisCount: 2,
-        padding: const EdgeInsets.all(55.0),
-        mainAxisSpacing: 20.0,
-        crossAxisSpacing: 20.0,
-        shrinkWrap: true,
-        children: _pets.map((String url) {
-          return GridTile( // doesn't have size
-            child: GestureDetector(
-              child: Container(
-                child: Image(
-                  image: AssetImage(url),
-                  fit: BoxFit.scaleDown,
+    return Column(children: [
+      Padding(padding: EdgeInsets.all(12.0)),
+      Text('What type of best friend do you have?',
+          style: TextStyle(
+            fontSize: 32,
+            color: Colors.white,
+          )),
+      Expanded(
+        child: GridView.count(
+            crossAxisCount: 3,
+            padding: const EdgeInsets.all(75.0),
+            mainAxisSpacing: 20.0,
+            crossAxisSpacing: 20.0,
+            shrinkWrap: true,
+            children: _pets.map((String url) {
+              return GridTile(
+                // doesn't have size
+                child: GestureDetector(
+                  child: Container(
+                    child: Image(
+                      image: AssetImage(url),
+                      fit: BoxFit.scaleDown,
+                    ),
+                  ),
+                  // TODO there's gotta be a better way to do this
+                  onTap: () => _onDogBreedClicked(null),
                 ),
-              ),
-              // TODO there's gotta be a better way to do this
-              onTap: () => _onAnimalClicked(_pets.indexOf(url)),
-            ),
-          );
-        }).toList());
+              );
+            }).toList()),
+      ),
+    ]);
   }
 
   void _onAnimalClicked(index) {
