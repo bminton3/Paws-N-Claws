@@ -7,35 +7,10 @@
 
 import 'package:flutter/material.dart';
 import 'ageDropDown.dart';
+import 'dart:ui';
+import 'frostedGlass.dart';
 
 void main() => runApp(MyApp());
-
-//======= Colors ========
-// Colors.white for specific named colors
-// Color(0xhex) for custom colors
-
-// 0xFF65CAE0 - light blue?
-// 0xFFA2CAC9 - teal?
-// 0xFFD9DDC5 - tan
-// 0xFFEB822F - orange
-// 0xFFF26600 - bright orange
-// 0xFF694533 - brown
-// the first 2 digits are transparency.
-
-// TODO naming routes. May be needed later
-/*void main() {
-  runApp(MaterialApp(
-    home: MyAppHome(), // becomes the route named '/'
-    routes: <String, WidgetBuilder> {
-      '/a': (BuildContext context) => MyPage(title: 'page A'),
-      '/b': (BuildContext context) => MyPage(title: 'page B'),
-      '/c': (BuildContext context) => MyPage(title: 'page C'),
-    },
-  ));
-}*/
-
-// button ideas: OutlineButton, IconButton (probably this one)
-// layout ideas: gridview
 
 /// This Widget is the main application widget.
 class MyApp extends StatelessWidget {
@@ -68,11 +43,16 @@ class PawsAndClawsState extends State<PawsAndClaws> {
   // an instance variable's value to work
   double _age = 1;
 
+  // Ideas to get the frosted glass to disappear on tap and reappear after idle:
+  // 1. Make it a stateful widget and have visible a member variable. Who manages bringing it back, though? A timer inside itself?
+  // 2.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _buildPetIcons(context),
-    );
+        body: Stack(children: [
+          _buildPetIcons(context),
+          new FrostedGlassScreensaver(),
+        ]));
   }
 
   // TODO need title text: "What kind of pet do you have?"
