@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: _title,
+      theme: ThemeData(fontFamily: 'Marydale'),
       home: PawsAndClaws(),
     );
   }
@@ -27,9 +28,9 @@ class MyApp extends StatelessWidget {
 
 class PawsAndClawsState extends State<PawsAndClaws> {
   final List<String> _pets = [
-    'assets/Dog.png',
-    'assets/Cat.png',
-    'assets/Other.png'
+    'assets/dogbutton.png',
+    'assets/catbutton.png',
+    'assets/otherbutton.png'
   ];
 
   final List<Text> _dogBreeds = [
@@ -55,33 +56,13 @@ class PawsAndClawsState extends State<PawsAndClaws> {
         ]));
   }
 
-  // TODO need title text: "What kind of pet do you have?"
-  // and either text in the images or text below the images
-  // TODO implement OrientationBuilder
+  // TODO implement OrientationBuilder - do I still need this? This was for autoorientation
   Widget _buildPetIcons(BuildContext context) {
     return Container(
-        // this indigo has a sort of authoritative feeling
-        decoration: BoxDecoration(color: Color(0xAF65CAE0)),
-        child: Center(
-            child: Container(
-          decoration: BoxDecoration(
-              color: Color(0xFFA2CAC9),
-              border: Border.all(
-                width: 1,
-              ),
-              borderRadius: new BorderRadius.only(
-                  topLeft: const Radius.circular(40.0),
-                  topRight: const Radius.circular(40.0),
-                  bottomLeft: const Radius.circular(40.0),
-                  bottomRight: const Radius.circular(40.0))),
-          margin: const EdgeInsets.all(10.0),
+        // new color
+        decoration: BoxDecoration(color: Color(0xEF80D2F5)),
 
-          // ipad 6's logical resolution is 768 x 1024 px
-          // width and height set to 75% of screen size
-          width: MediaQuery.of(context).size.width * 0.75,
-          height: MediaQuery.of(context).size.height * 0.55,
-          child: _buildTappableButtons(context),
-        )));
+        child: _buildTappableButtons(context));
   }
 
   /**
@@ -90,35 +71,60 @@ class PawsAndClawsState extends State<PawsAndClaws> {
   Widget _buildTappableButtons(BuildContext context) {
     // TODO we may not want a GridView because it's scrollable. May be fun for the users, though
     return Column(children: [
-      Padding(padding: EdgeInsets.all(12.0)),
+      Padding(padding: EdgeInsets.all(50.0)),
       Text('What type of best friend do you have?',
           style: TextStyle(
-            fontSize: 32,
+            fontSize: 54,
+            fontFamily: 'Marydale',
+            fontWeight: FontWeight.w700,
             color: Colors.white,
+            shadows: [
+              Shadow(
+                blurRadius: 2.0,
+                color: Colors.grey,
+                offset: Offset(2.0, 2.0),
+              ),
+            ],
           )),
-      Expanded(
-        child: GridView.count(
-            crossAxisCount: 3,
-            padding: const EdgeInsets.all(75.0),
-            mainAxisSpacing: 20.0,
-            crossAxisSpacing: 20.0,
-            shrinkWrap: true,
-            children: _pets.map((String url) {
-              return GridTile(
-                // doesn't have size
-                child: GestureDetector(
-                  child: Container(
-                    child: Image(
-                      image: AssetImage(url),
-                      fit: BoxFit.scaleDown,
-                    ),
-                  ),
-                  // TODO there's gotta be a better way to do this
-                  onTap: () => _onDogBreedClicked(null),
-                ),
-              );
-            }).toList()),
+      Text('(tap your pet below)',
+          style: TextStyle(
+              fontSize: 24,
+              fontFamily: 'Arial',
+              color: Colors.white
+          )
       ),
+      Expanded(
+        child: Column(children: [
+          GridView.count(
+              crossAxisCount: 3,
+              padding: const EdgeInsets.only(left:50.0,right:50.0,top:50.0),
+              mainAxisSpacing: 10.0,
+              crossAxisSpacing: 10.0,
+              shrinkWrap: true,
+              children: _pets.map((String url) {
+                return GridTile(
+                  // doesn't have size
+                  child: GestureDetector(
+                    child: Container(
+                      child: Image(
+                        image: AssetImage(url),
+                        fit: BoxFit.scaleDown,
+                      ),
+                    ),
+                    // TODO there's gotta be a better way to do this
+                    onTap: () => _onDogBreedClicked(null),
+                  ),
+                );
+              }).toList()),
+          Text(' Dog      Cat     Other',
+            style: TextStyle(
+              fontSize: 68,
+              fontFamily: 'Marydale',
+              fontWeight: FontWeight.w700,
+              color: Colors.white
+            )
+          )
+      ])),
     ]);
   }
 

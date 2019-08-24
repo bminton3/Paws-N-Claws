@@ -47,7 +47,7 @@ class FrostedGlassScreensaverState extends State<FrostedGlassScreensaver> {
   }
 
   void startRestartableTimer() {
-    RestartableTimer(Duration(seconds: 3), () => setVisible(true));
+    RestartableTimer(Duration(seconds: 30), () => setVisible(true));
   }
 
   void setVisible(bool visible) {
