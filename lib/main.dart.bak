@@ -44,7 +44,7 @@ class MyWidget extends StatelessWidget {
 
 class PawsAndClawsState extends State<PawsAndClaws> {
   final List<String> _pets = [
-    'assets/dogbuttonresized.png',
+    'assets/dogbutton.png',
     'assets/catbutton.png',
     'assets/otherbutton.png'
   ];
