@@ -124,16 +124,7 @@ class PawsAndClawsState extends State<PawsAndClaws> {
             children: _pets.map((String url) {
               return GridTile(
                 // doesn't have size
-                child: GestureDetector(
-                  child: Container(
-                    child: Image(
-                      image: AssetImage(url),
-                      fit: BoxFit.scaleDown,
-                    ),
-                  ),
-                  // TODO there's gotta be a better way to do this
-                  onTap: () => _onDogBreedClicked(null),
-                ),
+                child: AnimatedButton(url),
               );
             }).toList()),
         Container(
@@ -147,46 +138,7 @@ class PawsAndClawsState extends State<PawsAndClaws> {
     ]);
   }
 
-  void _onAnimalClicked(index) {
-    print("You tapped an item");
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (BuildContext context) {
-          return Scaffold(
-              appBar: AppBar(
-                title: Text("What breed is your dog?"),
-              ),
-              body: _buildDogBreedList(context));
-        },
-      ),
-    );
-  }
 
-  // Widgets seem to always be named with an underscore and camelcase
-  Widget _buildDogBreedList(BuildContext context) {
-    return ListView.separated(
-        itemBuilder: (context, index) {
-          return ListTile(
-            // TODO study this
-            title: _dogBreeds[index],
-            onTap: () => _onDogBreedClicked(index),
-          );
-        },
-        // TODO see exactly what this does later
-        separatorBuilder: (BuildContext context, int index) => Divider(
-              color: Colors.deepOrange,
-            ),
-        itemCount: _dogBreeds.length);
-  }
-
-  void _onDogBreedClicked(index) {
-    print("You selected a breed");
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (BuildContext context) => new DogAgeDropDown(),
-      ),
-    );
-  }
 
 // ======== Age Slider =============
   Widget createAgeSlider() {
@@ -235,6 +187,86 @@ class PawsAndClawsState extends State<PawsAndClaws> {
 class PawsAndClaws extends StatefulWidget {
   @override
   PawsAndClawsState createState() => PawsAndClawsState();
+}
+
+class AnimatedButton extends StatefulWidget {
+
+  final String url;
+
+  AnimatedButton(@required this.url);
+
+  @override
+  _AnimatedButtonState createState() => _AnimatedButtonState(url);
+}
+
+// ======== Animated button =====ß
+class _AnimatedButtonState extends State<AnimatedButton> with SingleTickerProviderStateMixin {
+  // field holds the url passed in
+  final String url;
+
+  _AnimatedButtonState (@required this.url);
+
+  double _scale;
+  AnimationController _controller;
+
+  @override
+  Widget build(BuildContext context) {
+    _scale = 1 - _controller.value;
+
+    return GestureDetector(
+      onTapDown: _onTapDown,
+      onTapUp: _onTapUp,
+      child: Transform.scale(
+        scale: _scale,
+        child: GestureDetector(
+          child: Container(
+            child: Image(
+              image: AssetImage(url),
+              fit: BoxFit.scaleDown,
+            ),
+          ),
+          // TODO there's gotta be a better way to do this
+          onTap: () => _onDogBreedClicked(null),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 200),
+      lowerBound: 0.0,
+      upperBound: 0.1,
+    )
+      ..addListener(() { setState(() {});}); // once again, what does .. mean? And I forget what {} vs => means
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onTapDown(TapDownDetails details) {
+    _controller.forward();
+  }
+
+  void _onTapUp(TapUpDetails details) {
+    _controller.reverse();
+  }
+
+  void _onDogBreedClicked(index) {
+    print("You selected a breed");
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) => new DogAgeDropDown(),
+      ),
+    );
+  }
+
 }
 
 //======= Colors ========
