@@ -5,6 +5,8 @@ import 'frosted_glass.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:developer';
 
+enum pettypes {dog, cat, other}
+
 void main() => runApp(MyApp());
 
 /// This Widget is the main application widget.
@@ -32,6 +34,7 @@ class MyWidget extends StatelessWidget {
     // ipad 6: 1536 x 2048
     double defaultScreenWidth = 2048.0;
     double defaultScreenHeight = 1536.0;
+    // wtf does ..init do?
     ScreenUtil.instance = ScreenUtil(
       width: defaultScreenWidth,
       height: defaultScreenHeight,
@@ -43,6 +46,7 @@ class MyWidget extends StatelessWidget {
 }
 
 class PawsAndClawsState extends State<PawsAndClaws> {
+
   final List<String> _pets = [
     'assets/dogbuttonresized.png',
     'assets/catbutton.png',
@@ -68,7 +72,7 @@ class PawsAndClawsState extends State<PawsAndClaws> {
     return Scaffold(
         body: Stack(children: [
       _buildPetIcons(context),
-      new FrostedGlassScreensaver(),
+      //new FrostedGlassScreensaver(),
     ]));
   }
 
