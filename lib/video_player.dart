@@ -258,7 +258,12 @@ class VideoPlayerState extends State<VideoPlayer> {
   void initState() {
     super.initState();
     _videoPlayerController1 =
-        VideoPlayerController.asset('assets/housetrain.mp4');
+        VideoPlayerController.asset('assets/videos/housetrain.mp4');
+    _videoPlayerController1.addListener(() {
+      if (!_videoPlayerController1.value.isPlaying) {
+        Navigator.pop(context);
+      }
+    });
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController1,
       aspectRatio: 3 / 2,
@@ -321,16 +326,9 @@ final List<Dogvideo> _trainingDogVideos = [
   Dogvideo('Aggressive dog',
       'assets/videos/aggressivedog.mp4',
       'assets/Aggression.PNG'), // Training
-  Dogvideo('Dog anxiety',
-      'assets/videos/anxiousdog.mp4',
-      'assets/Anxiety.PNG'),
   Dogvideo('Potty Training',
       'assets/videos/pottytrain.mp4',
       'assets/pottytraining.PNG'),
-  Dogvideo(
-      'Puppy Potty Training',
-      'assets/videos/zakpottytrain.mp4',
-      'assets/cratetraining.PNG')
 ];
 
 final List<Dogvideo> _trickDogVideos = [
@@ -370,10 +368,6 @@ final List<Dogvideo> _funnyDogVideos = [
       'assets/Arguing.PNG'),
   Dogvideo('Guilty great dane', 'assets/videos/guiltydane.mp4',
       'assets/antisocialthumbnail.jpg'),
-  Dogvideo(
-      'Hilarious pets',
-      'assets/videos/hilariouspets.mp4',
-      'assets/DogsMocking.PNG'),
   Dogvideo(
       'Funny bulldog',
       'assets/videos/funnybulldog.mp4',

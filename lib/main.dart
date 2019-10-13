@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'frosted_glass.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:developer';
+import 'dart:async';
 
 enum pettypes {dog, cat, other}
 
@@ -237,11 +238,14 @@ class _AnimatedButtonState extends State<AnimatedButton> with SingleTickerProvid
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 200),
+      duration: Duration(milliseconds: 50),
       lowerBound: 0.0,
       upperBound: 0.1,
     )
-      ..addListener(() { setState(() {});}); // once again, what does .. mean? And I forget what {} vs => means
+      ..addListener(() {
+        Timer(Duration(milliseconds: 50), () { // if this actually works...
+          setState(() {});
+        },);}); // once again, what does .. mean? And I forget what {} vs => means
   }
 
   @override
