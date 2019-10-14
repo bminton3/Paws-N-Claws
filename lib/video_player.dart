@@ -1,14 +1,17 @@
 import 'dart:typed_data';
 
 import 'package:chewie/chewie.dart';
+import 'package:video_player/video_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:video_thumbnail/video_thumbnail.dart';
+import 'dart:developer';
 
-enum videotypes {Tricks, Training, Socialization, Funny, Local}
+import 'play_pause_button.dart';
+
+enum videotypes { Tricks, Training, Socialization, Funny, Local }
 
 class VideoPlayer extends StatefulWidget {
   @override
@@ -20,13 +23,40 @@ class VideoPlayer extends StatefulWidget {
 // TODO maybe create a factory pattern to create Dogvideos from the internet vs folders?
 // TODO implement for cat videos, any type of videos, really
 class VideoPlayerState extends State<VideoPlayer> {
-
   VideoPlayerController _videoPlayerController1;
   ChewieController _chewieController;
   // currently selected video list
   videotypes selectedVideoType = videotypes.Training;
 
+  ScrollController _scrollController;
 
+  @override
+  void initState() {
+    super.initState();
+    _videoPlayerController1 =
+        VideoPlayerController.asset('assets/videos/housetrain.mp4');
+    _chewieController = ChewieController(
+      videoPlayerController: _videoPlayerController1,
+      aspectRatio: 3 / 2,
+      autoPlay: true,
+      looping: false,
+      autoInitialize: true,
+      showControls: true,
+
+      // materialProgressColors: ChewieProgressColors(
+      //   playedColor: Colors.red,
+      //   handleColor: Colors.blue,
+      //   backgroundColor: Colors.grey,
+      //   bufferedColor: Colors.lightGreen,
+      // ),
+      // placeholder: Container(
+      //   color: Colors.grey,
+      // ),
+      // autoInitialize: true,
+    );
+
+    _scrollController = ScrollController();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,9 +92,7 @@ class VideoPlayerState extends State<VideoPlayer> {
                   child: Center(
                     child: SizedBox(
                       height: 450,
-                      child: Chewie(
-                        controller: _chewieController,
-                      ),
+                      child: VideoPlayPause(_videoPlayerController1),
                     ),
                   ),
                 ),
@@ -72,14 +100,57 @@ class VideoPlayerState extends State<VideoPlayer> {
             ],
           ),
           // bottom horizontal scroller with videos to choose from
-          Container(
-            width: 800.0,
-            height: 160.0,
-            child: createCustomDynamicHorizontalImageScroller(),
-          ),
+          Row(children: [
+            Padding(padding: EdgeInsets.only(right: 30.0)),
+            SizedBox(
+              width: 149.0,
+              height: 160.0,
+              // doesn't have size
+              child: GestureDetector(
+                child: Container(
+                  child: Image(
+                    image: AssetImage('assets/leftarrow.jpg'),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                // TODO there's gotta be a better way to do this
+                onTap: () => _moveLeft(),
+              ),
+            ),
+            Container(
+              width: 650.0,
+              height: 160.0,
+              child: createCustomDynamicHorizontalImageScroller(),
+            ),
+            SizedBox(
+              width: 149.0,
+              height: 160.0,
+              // doesn't have size
+              child: GestureDetector(
+                child: Container(
+                  child: Image(
+                    image: AssetImage('assets/rightarrow.jpg'),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                // TODO there's gotta be a better way to do this
+                onTap: () => _moveRight(),
+              ),
+            ),
+          ]),
         ]),
       ),
     );
+  }
+
+  void _moveRight() {
+    _scrollController.animateTo(_scrollController.offset + 200,
+        curve: Curves.linear, duration: Duration (milliseconds: 500));
+  }
+
+  void _moveLeft() {
+    _scrollController.animateTo(_scrollController.offset - 200,
+        curve: Curves.linear, duration: Duration (milliseconds: 500));
   }
 
   /**
@@ -117,6 +188,7 @@ class VideoPlayerState extends State<VideoPlayer> {
 
   ListView createDynamicHorizontalImageScroller(List<Dogvideo> dogvideos) {
     return ListView.builder(
+        controller: _scrollController,
         scrollDirection: Axis.horizontal,
         itemCount: dogvideos.length,
         itemBuilder: (BuildContext ctxt, int index) {
@@ -157,7 +229,7 @@ class VideoPlayerState extends State<VideoPlayer> {
    */
   ListView createHorizontalImageScroller() {
     return ListView(
-      // This next line does the trick.
+      controller: _scrollController,
       scrollDirection: Axis.horizontal,
       children: <Widget>[
         Column(children: [
@@ -254,37 +326,7 @@ class VideoPlayerState extends State<VideoPlayer> {
     changeVideo(video);
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _videoPlayerController1 =
-        VideoPlayerController.asset('assets/videos/housetrain.mp4');
-    _videoPlayerController1.addListener(() {
-      if (!_videoPlayerController1.value.isPlaying) {
-        Navigator.pop(context);
-      }
-    });
-    _chewieController = ChewieController(
-      videoPlayerController: _videoPlayerController1,
-      aspectRatio: 3 / 2,
-      autoPlay: true,
-      looping: false,
-      autoInitialize: true,
-      // Try playing around with some of these other options:
 
-      showControls: true,
-      // materialProgressColors: ChewieProgressColors(
-      //   playedColor: Colors.red,
-      //   handleColor: Colors.blue,
-      //   backgroundColor: Colors.grey,
-      //   bufferedColor: Colors.lightGreen,
-      // ),
-      // placeholder: Container(
-      //   color: Colors.grey,
-      // ),
-      // autoInitialize: true,
-    );
-  }
 
   void changeVideo(String videoName) {
     _chewieController.pause();
@@ -320,66 +362,50 @@ class VideoPlayerState extends State<VideoPlayer> {
 }
 
 final List<Dogvideo> _trainingDogVideos = [
-  Dogvideo('Housetrain',
-      'assets/videos/housetrain.mp4',
+  Dogvideo('Housetrain', 'assets/videos/housetrain.mp4',
       'assets/antisocialthumbnail.jpg'), // Training
-  Dogvideo('Aggressive dog',
-      'assets/videos/aggressivedog.mp4',
+  Dogvideo('Aggressive dog', 'assets/videos/aggressivedog.mp4',
       'assets/Aggression.PNG'), // Training
-  Dogvideo('Potty Training',
-      'assets/videos/pottytrain.mp4',
+  Dogvideo('Potty Training', 'assets/videos/pottytrain.mp4',
       'assets/pottytraining.PNG'),
 ];
 
 final List<Dogvideo> _trickDogVideos = [
-  Dogvideo('Teach Puppy Tricks',
-      'assets/videos/puppyliedown.mp4',
+  Dogvideo('Teach Puppy Tricks', 'assets/videos/puppyliedown.mp4',
       'assets/LieDown.PNG'),
-  Dogvideo('Paw Trick',
-      'assets/videos/pawtrick.mp4',
-      'assets/Shake.PNG'),
-  Dogvideo('Teach roll over',
-      'assets/videos/rollover.mp4',
-      'assets/RollOver.PNG'),
+  Dogvideo('Paw Trick', 'assets/videos/pawtrick.mp4', 'assets/Shake.PNG'),
+  Dogvideo(
+      'Teach roll over', 'assets/videos/rollover.mp4', 'assets/RollOver.PNG'),
 ];
 
 final List<Dogvideo> _socializationDogVideos = [
-  Dogvideo('Socialize Puppy',
-      'assets/videos/socializepuppy.mp4',
+  Dogvideo('Socialize Puppy', 'assets/videos/socializepuppy.mp4',
       'assets/SocializationResearch.PNG'),
-  Dogvideo(
-      'Puppy Socialization',
-      'assets/videos/earlypuppysocialization.mp4',
+  Dogvideo('Puppy Socialization', 'assets/videos/earlypuppysocialization.mp4',
       'assets/Socialization.PNG'),
 ];
 
 final List<Dogvideo> _funnyDogVideos = [
-  Dogvideo(
-      'Funniest Confused Pets',
-      'assets/videos/funniestconfusedpets.mp4',
+  Dogvideo('Funniest Confused Pets', 'assets/videos/funniestconfusedpets.mp4',
       'assets/Socialization.PNG'),
-  Dogvideo(
-      'Funny dogs',
-      'assets/videos/funnydogscrylaughter.mp4',
+  Dogvideo('Funny dogs', 'assets/videos/funnydogscrylaughter.mp4',
       'assets/SocializationResearch.PNG'),
-  Dogvideo(
-      'Funny dogs talking',
-      'assets/videos/funnydogstalking.mp4',
+  Dogvideo('Funny dogs talking', 'assets/videos/funnydogstalking.mp4',
       'assets/Arguing.PNG'),
   Dogvideo('Guilty great dane', 'assets/videos/guiltydane.mp4',
       'assets/antisocialthumbnail.jpg'),
-  Dogvideo(
-      'Funny bulldog',
-      'assets/videos/funnybulldog.mp4',
+  Dogvideo('Funny bulldog', 'assets/videos/funnybulldog.mp4',
       'assets/FunnyBulldogs.PNG'),
   Dogvideo('Hangry dog Reuben', 'assets/videos/reubenhangrydog.mp4',
       'assets/HangryDog.PNG'),
 ];
 
 final List<Dogvideo> _localVideos = [
-  Dogvideo('NBA All-Star', 'assets/videos/nbaallstar.mp4','assets/AllStar.PNG'),
+  Dogvideo(
+      'NBA All-Star', 'assets/videos/nbaallstar.mp4', 'assets/AllStar.PNG'),
   Dogvideo('Residents Fear', 'assets/videos/traffic.mp4', 'assets/Traffic.PNG'),
-  Dogvideo('Hurricane Dorian', 'assets/videos/dorian.mp4', 'assets/LocalWeather.PNG'),
+  Dogvideo('Hurricane Dorian', 'assets/videos/dorian.mp4',
+      'assets/LocalWeather.PNG'),
 ];
 
 class Dogvideo {
