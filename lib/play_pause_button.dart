@@ -26,7 +26,7 @@ class _VideoPlayPauseState extends State<VideoPlayPause> {
   }
 
   FadeAnimation imageFadeAnim =
-  FadeAnimation(child: const Icon(Icons.play_arrow, size: 100.0));
+      FadeAnimation(child: const Icon(Icons.play_arrow, size: 100.0));
   VoidCallback listener;
 
   VideoPlayerController get controller => widget.controller;
@@ -89,7 +89,7 @@ class _VideoPlayPauseState extends State<VideoPlayPause> {
 
 class FadeAnimation extends StatefulWidget {
   FadeAnimation(
-      {this.child, this.duration = const Duration(milliseconds: 1000)});
+      {this.child, this.duration = const Duration(milliseconds: 2000)});
 
   final Widget child;
   final Duration duration;
@@ -139,9 +139,9 @@ class _FadeAnimationState extends State<FadeAnimation>
   Widget build(BuildContext context) {
     return animationController.isAnimating
         ? Opacity(
-      opacity: 1.0 - animationController.value,
-      child: widget.child,
-    )
+            opacity: 1.0 - animationController.value,
+            child: widget.child,
+          )
         : Container();
   }
 }

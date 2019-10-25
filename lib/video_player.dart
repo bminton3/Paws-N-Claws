@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'dart:developer';
-
+import 'animated_button.dart';
 import 'play_pause_button.dart';
 
 enum videotypes { Tricks, Training, Socialization, Funny, Local }
@@ -34,7 +34,7 @@ class VideoPlayerState extends State<VideoPlayer> {
   void initState() {
     super.initState();
     _videoPlayerController1 =
-        VideoPlayerController.asset('assets/videos/housetrain.mp4');
+        VideoPlayerController.asset('assets/videos/funniestconfusedpets.mp4');
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController1,
       aspectRatio: 3 / 2,
@@ -101,40 +101,49 @@ class VideoPlayerState extends State<VideoPlayer> {
           ),
           // bottom horizontal scroller with videos to choose from
           Row(children: [
-            Padding(padding: EdgeInsets.only(right: 30.0)),
-            SizedBox(
-              width: 149.0,
-              height: 160.0,
-              // doesn't have size
-              child: GestureDetector(
-                child: Container(
-                  child: Image(
-                    image: AssetImage('assets/leftarrow.jpg'),
-                    fit: BoxFit.contain,
+            //Padding(padding: EdgeInsets.only(right: 30.0)),
+            Expanded(
+              flex: 1,
+              child: SizedBox(
+                width: 149.0,
+                height: 160.0,
+                // doesn't have size
+                child: GestureDetector(
+                  child: Container(
+                    child: Image(
+                      image: AssetImage('assets/leftarrow.jpg'),
+                      fit: BoxFit.contain,
+                    ),
                   ),
+                  // TODO there's gotta be a better way to do this
+                  onTap: () => _moveLeft(),
                 ),
-                // TODO there's gotta be a better way to do this
-                onTap: () => _moveLeft(),
               ),
             ),
-            Container(
-              width: 650.0,
-              height: 160.0,
-              child: createCustomDynamicHorizontalImageScroller(),
+            Expanded(
+              flex: 3,
+              child: Container(
+                width: 650.0,
+                height: 160.0,
+                child: createCustomDynamicHorizontalImageScroller(),
+              ),
             ),
-            SizedBox(
-              width: 149.0,
-              height: 160.0,
-              // doesn't have size
-              child: GestureDetector(
-                child: Container(
-                  child: Image(
-                    image: AssetImage('assets/rightarrow.jpg'),
-                    fit: BoxFit.contain,
+            Expanded(
+              flex: 1,
+              child: SizedBox(
+                width: 149.0,
+                height: 160.0,
+                // doesn't have size
+                child: GestureDetector(
+                  child: Container(
+                    child: Image(
+                      image: AssetImage('assets/rightarrow.jpg'),
+                      fit: BoxFit.contain,
+                    ),
                   ),
+                  // TODO there's gotta be a better way to do this
+                  onTap: () => _moveRight(),
                 ),
-                // TODO there's gotta be a better way to do this
-                onTap: () => _moveRight(),
               ),
             ),
           ]),
@@ -145,12 +154,12 @@ class VideoPlayerState extends State<VideoPlayer> {
 
   void _moveRight() {
     _scrollController.animateTo(_scrollController.offset + 200,
-        curve: Curves.linear, duration: Duration (milliseconds: 500));
+        curve: Curves.linear, duration: Duration(milliseconds: 500));
   }
 
   void _moveLeft() {
     _scrollController.animateTo(_scrollController.offset - 200,
-        curve: Curves.linear, duration: Duration (milliseconds: 500));
+        curve: Curves.linear, duration: Duration(milliseconds: 500));
   }
 
   /**
@@ -315,6 +324,7 @@ class VideoPlayerState extends State<VideoPlayer> {
                       }
                       break;
                   }
+                  _moveRight();
                 });
               }),
         ),
@@ -326,8 +336,6 @@ class VideoPlayerState extends State<VideoPlayer> {
     changeVideo(video);
   }
 
-
-
   void changeVideo(String videoName) {
     _chewieController.pause();
     _chewieController.dispose();
@@ -336,7 +344,7 @@ class VideoPlayerState extends State<VideoPlayer> {
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController1,
       aspectRatio: 3 / 2,
-      autoPlay: false,
+      autoPlay: true,
       looping: false,
       autoInitialize: true,
       showControls: true,
