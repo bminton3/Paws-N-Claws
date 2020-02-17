@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'video_player.dart';
 
 String dropdownAge = '0-6 months';
 
@@ -19,47 +18,47 @@ class DogAgeDropDownState extends State<DogAgeDropDown> {
           decoration: BoxDecoration(color: Color(0xEF80D2F5)),
           child: Center(
               child: Stack(children: [
-            Positioned(
-              bottom: -15.0,
-              left: -10.0,
-              child: Container(
-                width: 1100,
-                child: Image(
-                  image: AssetImage('assets/bigdog.png'),
+                Positioned(
+                  bottom: -15.0,
+                  left: -10.0,
+                  child: Container(
+                    width: 1100,
+                    child: Image(
+                      image: AssetImage('assets/bigdog.png'),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Positioned(
-              right: 10.0,
-              bottom: 325.0,
-              child: Container(
-                width: 400,
-                child: Column(
-                  children: <Widget>[
-                    Padding(padding: EdgeInsets.all(12.0)),
-                    Text('How old is your best friend?',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        )),
-                    Container(
-                      child: Container(
-                        width: 200,
-                        child: createAgeDropdown(),
-                        decoration: ShapeDecoration(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)),
+                Positioned(
+                  right: 10.0,
+                  bottom: 325.0,
+                  child: Container(
+                    width: 400,
+                    child: Column(
+                      children: <Widget>[
+                        Padding(padding: EdgeInsets.all(12.0)),
+                        Text('How old is your best friend?',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            )),
+                        Container(
+                          child: Container(
+                            width: 200,
+                            child: createAgeDropdown(),
+                            decoration: ShapeDecoration(
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
           ]))),
     );
   }
@@ -74,11 +73,7 @@ class DogAgeDropDownState extends State<DogAgeDropDown> {
             setState(() {
               print(newValue);
             });
-            Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (BuildContext context) => new VideoPlayer(),
-              ),
-            );
+            Navigator.of(context).pushNamed('/dogVideoPlayer');
           },
           items: <String>[
             '0-6 months',
@@ -104,11 +99,7 @@ class DogAgeDropDownState extends State<DogAgeDropDown> {
   Widget get submitRatingButton {
     return RaisedButton(
       onPressed: () {
-        Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (BuildContext context) => new VideoPlayer(),
-          ),
-        );
+        Navigator.of(context).pushNamed('/dogVideoPlayer');
       },
       child: Text('Submit'),
       color: Colors.lightBlue,

@@ -1,14 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:chewie/chewie.dart';
-import 'package:video_player/video_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as p;
+import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
-import 'dart:developer';
-import 'animated_button.dart';
+
 import 'play_pause_button.dart';
 
 enum videotypes { Tricks, Training, Socialization, Funny, Local }
@@ -25,6 +22,7 @@ class VideoPlayer extends StatefulWidget {
 class VideoPlayerState extends State<VideoPlayer> {
   VideoPlayerController _videoPlayerController1;
   ChewieController _chewieController;
+
   // currently selected video list
   videotypes selectedVideoType = videotypes.Training;
 
@@ -34,7 +32,7 @@ class VideoPlayerState extends State<VideoPlayer> {
   void initState() {
     super.initState();
     _videoPlayerController1 =
-        VideoPlayerController.asset('assets/videos/funniestconfusedpets.mp4');
+        VideoPlayerController.asset('assets/videos/funnydogscrylaughter.mp4');
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController1,
       aspectRatio: 3 / 2,
@@ -65,26 +63,45 @@ class VideoPlayerState extends State<VideoPlayer> {
         // background color
         color: Color(0xEF80D2F5),
         child: Column(children: [
-          Padding(padding: EdgeInsets.all(25.0)),
+//          Padding(padding: EdgeInsets.all(15.0)),
+
+          // back arrow
+//          Row(children: [
+//            GestureDetector(
+//              child:
+//              Container(
+//                  padding: new EdgeInsets.only(left:2.0, top:20.0),
+//                  child: SizedBox(
+//                    height: 50,
+//                    child: Image(
+//                      image: AssetImage('assets/back-arrow.png'),
+//                      fit: BoxFit.contain,
+//                    ),
+//                  )),
+//              onTap:() => Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName))
+//            )
+//          ]),
+
           // side buttons
           Row(
             children: [
               Container(
                   child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  createSideButton('Tricks'),
-                  Padding(padding: EdgeInsets.all(5.0)),
-                  createSideButton('Training'),
-                  Padding(padding: EdgeInsets.all(5.0)),
-                  createSideButton('Socialization'),
-                  Padding(padding: EdgeInsets.all(5.0)),
-                  createSideButton('Funny Dogs'),
-                  Padding(padding: EdgeInsets.all(5.0)),
-                  createSideButton('Local Info'),
-                  Padding(padding: EdgeInsets.all(5.0)),
-                ],
-              )),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      createSideButton('Tricks'),
+                      Padding(padding: EdgeInsets.all(5.0)),
+                      createSideButton('Training'),
+                      Padding(padding: EdgeInsets.all(5.0)),
+                      createSideButton('Socialization'),
+                      Padding(padding: EdgeInsets.all(5.0)),
+                      createSideButton('Funny Dogs'),
+                      Padding(padding: EdgeInsets.all(5.0)),
+                      createSideButton('Local Info'),
+                      Padding(padding: EdgeInsets.all(5.0)),
+                    ],
+                  )),
+
               // video player
               Expanded(
                 child: Container(
@@ -99,14 +116,17 @@ class VideoPlayerState extends State<VideoPlayer> {
               ),
             ],
           ),
+
           // bottom horizontal scroller with videos to choose from
           Row(children: [
             //Padding(padding: EdgeInsets.only(right: 30.0)),
+
+            // left arrow
             Expanded(
               flex: 1,
               child: SizedBox(
-                width: 149.0,
-                height: 160.0,
+                width: 119.0,
+                height: 130.0,
                 // doesn't have size
                 child: GestureDetector(
                   child: Container(
@@ -120,6 +140,8 @@ class VideoPlayerState extends State<VideoPlayer> {
                 ),
               ),
             ),
+
+            // videos
             Expanded(
               flex: 3,
               child: Container(
@@ -128,11 +150,13 @@ class VideoPlayerState extends State<VideoPlayer> {
                 child: createCustomDynamicHorizontalImageScroller(),
               ),
             ),
+
+            // right arrow
             Expanded(
               flex: 1,
               child: SizedBox(
-                width: 149.0,
-                height: 160.0,
+                width: 119.0,
+                height: 130.0,
                 // doesn't have size
                 child: GestureDetector(
                   child: Container(
@@ -366,6 +390,12 @@ class VideoPlayerState extends State<VideoPlayer> {
       quality: 25,
     );
     return uint8list;
+  }
+
+  BoxDecoration myBoxDecoration() {
+    return BoxDecoration(
+      border: Border.all(),
+    );
   }
 }
 

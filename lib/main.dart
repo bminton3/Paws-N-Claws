@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
-import 'age_input_screen.dart';
-import 'dart:ui';
-import 'frosted_glass.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:developer';
-import 'dart:async';
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import 'age_input_screen.dart';
 import 'animated_button.dart';
+import 'video_player.dart';
 
 enum pettypes {dog, cat, other}
 
@@ -20,12 +21,19 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: _title,
       theme: ThemeData(fontFamily: 'Marydale'),
-      home: MyWidget(),
+      home: HomeScreen(),
+      routes: <String, WidgetBuilder> {
+        '/homeScreen': (BuildContext context) => new HomeScreen(),
+        '/dogAgeInput': (BuildContext context) => new DogAgeDropDown(),
+        '/catAgeInput': (BuildContext context) => new DogAgeDropDown(),
+        '/otherPet': (BuildContext context) => new DogAgeDropDown(),
+        '/dogVideoPlayer': (BuildContext context) => new VideoPlayer(),
+      },
     );
   }
 }
 
-class MyWidget extends StatelessWidget {
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     log('height:  ${MediaQuery.of(context).size.height}');
@@ -62,7 +70,7 @@ class PawsAndClawsState extends State<PawsAndClaws> {
     Text("Black Labrador")
   ];
 
-  // Widgets only get rebuilt when there is a change in its state. Slider had to set
+  // HACK: Widgets only get rebuilt when there is a change in its state. Slider had to set
   // an instance variable's value to work
   double _age = 1;
 
@@ -93,6 +101,8 @@ class PawsAndClawsState extends State<PawsAndClaws> {
     // TODO we may not want a GridView because it's scrollable. May be fun for the users, though
     return Column(children: [
       Padding(padding: EdgeInsets.all(ScreenUtil.instance.setWidth(50.0))),
+
+      // text above pet buttons
       Text('What type of best friend do you have?',
           style: TextStyle(
             fontSize: ScreenUtil.instance.setSp(100),
@@ -112,6 +122,8 @@ class PawsAndClawsState extends State<PawsAndClaws> {
               fontSize: ScreenUtil.instance.setSp(42.0),
               fontFamily: 'Arial',
               color: Colors.white)),
+
+      // pet buttons
       Expanded(
           child: Column(children: [
         GridView.count(
@@ -126,9 +138,10 @@ class PawsAndClawsState extends State<PawsAndClaws> {
             children: _pets.map((String url) {
               return GridTile(
                 // doesn't have size
-                child: AnimatedButton(url),
+                child: PawsAnimatedButton(url),
               );
             }).toList()),
+        // TODO refactor
         Container(
             child: Text(' Dog      Cat     Other',
                 style: TextStyle(

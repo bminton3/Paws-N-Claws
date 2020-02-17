@@ -1,27 +1,26 @@
-import 'package:flutter/material.dart';
-import 'age_input_screen.dart';
-import 'dart:ui';
-import 'frosted_glass.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'dart:developer';
 import 'dart:async';
+import 'dart:ui';
 
-class AnimatedButton extends StatefulWidget {
+import 'package:flutter/material.dart';
+
+import 'age_input_screen.dart';
+
+class PawsAnimatedButton extends StatefulWidget {
 
   final String url;
 
-  AnimatedButton(@required this.url);
+  PawsAnimatedButton(@required this.url);
 
   @override
-  _AnimatedButtonState createState() => _AnimatedButtonState(url);
+  _PawsAnimatedButtonState createState() => _PawsAnimatedButtonState(url);
 }
 
 // ======== Animated button =====ß
-class _AnimatedButtonState extends State<AnimatedButton> with SingleTickerProviderStateMixin {
+class _PawsAnimatedButtonState extends State<PawsAnimatedButton> with SingleTickerProviderStateMixin {
   // field holds the url passed in
   final String url;
 
-  _AnimatedButtonState (@required this.url);
+  _PawsAnimatedButtonState (@required this.url);
 
   double _scale;
   AnimationController _controller;
@@ -80,11 +79,7 @@ class _AnimatedButtonState extends State<AnimatedButton> with SingleTickerProvid
 
   void _onDogBreedClicked(index) {
     print("You selected a breed");
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (BuildContext context) => new DogAgeDropDown(),
-      ),
-    );
+    Navigator.of(context).pushNamed('/dogAgeInput');
   }
 
 }
