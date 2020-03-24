@@ -8,7 +8,7 @@ import 'age_input_screen.dart';
 import 'animated_button.dart';
 import 'video_player.dart';
 
-enum pettypes {dog, cat, other}
+enum pettypes { dog, cat, other }
 
 void main() => runApp(MyApp());
 
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       title: _title,
       theme: ThemeData(fontFamily: 'Marydale'),
       home: HomeScreen(),
-      routes: <String, WidgetBuilder> {
+      routes: <String, WidgetBuilder>{
         '/homeScreen': (BuildContext context) => new HomeScreen(),
         '/dogAgeInput': (BuildContext context) => new DogAgeDropDown(),
         '/catAgeInput': (BuildContext context) => new DogAgeDropDown(),
@@ -56,11 +56,10 @@ class HomeScreen extends StatelessWidget {
 }
 
 class PawsAndClawsState extends State<PawsAndClaws> {
-
   final List<String> _pets = [
     'assets/dogbuttonresized.png',
     'assets/catbutton.png',
-    'assets/otherbutton.png'
+    //'assets/otherbutton.png'
   ];
 
   final List<Text> _dogBreeds = [
@@ -103,7 +102,7 @@ class PawsAndClawsState extends State<PawsAndClaws> {
       Padding(padding: EdgeInsets.all(ScreenUtil.instance.setWidth(50.0))),
 
       // text above pet buttons
-      Text('What type of best friend do you have?',
+      Text('What type of best friend do you want?',
           style: TextStyle(
             fontSize: ScreenUtil.instance.setSp(100),
             fontFamily: 'Marydale',
@@ -117,43 +116,56 @@ class PawsAndClawsState extends State<PawsAndClaws> {
               ),
             ],
           )),
-      Text('(tap your pet below)',
-          style: TextStyle(
-              fontSize: ScreenUtil.instance.setSp(42.0),
-              fontFamily: 'Arial',
-              color: Colors.white)),
+//      Text('(tap your pet below)',
+//          style: TextStyle(
+//              fontSize: ScreenUtil.instance.setSp(42.0),
+//              fontFamily: 'Arial',
+//              color: Colors.white)),
 
       // pet buttons
-      Expanded(
-          child: Column(children: [
-        GridView.count(
-            crossAxisCount: 3,
-            padding: EdgeInsets.only(
-                left: ScreenUtil.instance.setWidth(50.0),
-                right: ScreenUtil.instance.setWidth(50.0),
-                top: ScreenUtil.instance.setWidth(50.0)),
-            mainAxisSpacing: ScreenUtil.instance.setWidth(10.0),
-            crossAxisSpacing: ScreenUtil.instance.setWidth(10.0),
-            shrinkWrap: true,
-            children: _pets.map((String url) {
-              return GridTile(
-                // doesn't have size
-                child: PawsAnimatedButton(url),
-              );
-            }).toList()),
-        // TODO refactor
-        Container(
-            child: Text(' Dog      Cat     Other',
-                style: TextStyle(
-                    fontSize: ScreenUtil.instance.setSp(145.0),
-                    fontFamily: 'Marydale',
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white)))
-      ])),
+      Column(children: [
+        Row(children: <Widget>[
+          Container(
+            padding: const EdgeInsets.all(20),
+            width: 500,
+            child: PawsAnimatedButton(_pets[0]),
+          ),
+          Container(
+            width: 500,
+            child: PawsAnimatedButton(_pets[1]),
+          ),
+        ])
+      ]),
+//      Column(children: [
+//        Row(children: <Widget>[
+//          Container(
+//            alignment: Alignment.center,
+//            width: 480,
+//            height: 120,
+//            child: Text(
+//              'dog',
+//              style: TextStyle(
+//                  fontSize: ScreenUtil.instance.setSp(145.0),
+//                  fontFamily: 'Marydale',
+//                  fontWeight: FontWeight.w700,
+//                  color: Colors.white),
+//            ),
+//          ),
+//          Container(
+//            alignment: Alignment.center,
+//            width: 480,
+//            height: 120,
+//            child: Text('cat',
+//                style: TextStyle(
+//                    fontSize: ScreenUtil.instance.setSp(145.0),
+//                    fontFamily: 'Marydale',
+//                    fontWeight: FontWeight.w700,
+//                    color: Colors.white)),
+//          ),
+//        ])
+//      ])
     ]);
   }
-
-
 
 // ======== Age Slider =============
   Widget createAgeSlider() {
