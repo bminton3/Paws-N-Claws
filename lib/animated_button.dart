@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import 'age_input_screen.dart';
+import 'dog_age_input_screen.dart';
 
 class PawsAnimatedButton extends StatefulWidget {
 
@@ -42,7 +42,7 @@ class _PawsAnimatedButtonState extends State<PawsAnimatedButton> with SingleTick
             ),
           ),
           // TODO there's gotta be a better way to do this
-          onTap: () => _onDogBreedClicked(null),
+          onTap: () => _onDogBreedClicked(url),
         ),
       ),
     );
@@ -77,9 +77,17 @@ class _PawsAnimatedButtonState extends State<PawsAnimatedButton> with SingleTick
     _controller.reverse();
   }
 
-  void _onDogBreedClicked(index) {
-    print("You selected a breed");
-    Navigator.of(context).pushNamed('/dogAgeInput');
+  void _onDogBreedClicked(url) {
+    switch(url) {
+      case 'assets/dogbuttonresized.png':
+        Navigator.of(context).pushNamed('/dogAgeInput');
+        break;
+      case 'assets/catbutton.png':
+        Navigator.of(context).pushNamed('/catAgeInput');
+        break;
+      default:
+        Navigator.of(context).pushNamed('/dogAgeInput');
+    }
   }
 
 }

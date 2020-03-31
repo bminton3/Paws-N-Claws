@@ -4,7 +4,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'age_input_screen.dart';
+import 'dog_age_input_screen.dart';
+import 'cat_age_input_screen.dart';
 import 'animated_button.dart';
 import 'video_player.dart';
 
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/homeScreen': (BuildContext context) => new HomeScreen(),
         '/dogAgeInput': (BuildContext context) => new DogAgeDropDown(),
-        '/catAgeInput': (BuildContext context) => new DogAgeDropDown(),
+        '/catAgeInput': (BuildContext context) => new CatAgeDropDown(),
         '/otherPet': (BuildContext context) => new DogAgeDropDown(),
         '/dogVideoPlayer': (BuildContext context) => new VideoPlayer(),
       },
@@ -125,15 +126,20 @@ class PawsAndClawsState extends State<PawsAndClaws> {
       // pet buttons
       Column(children: [
         Row(children: <Widget>[
-          Container(
-            padding: const EdgeInsets.all(20),
-            width: 500,
-            child: PawsAnimatedButton(_pets[0]),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(30),
+              width: 500,
+              child: PawsAnimatedButton(_pets[0]),
+            ),
           ),
-          Container(
-            width: 500,
-            child: PawsAnimatedButton(_pets[1]),
-          ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(30),
+              width: 500,
+              child: PawsAnimatedButton(_pets[1]),
+            ),
+          )
         ])
       ]),
 //      Column(children: [
@@ -184,29 +190,7 @@ class PawsAndClawsState extends State<PawsAndClaws> {
     );
   }
 
-  Widget createAgeDropdown() {
-    return DropdownButton<String>(
-      onChanged: (newValue) {
-        dropdownAge = newValue;
-        setState(() {
-          print(newValue);
-        });
-      },
-      items: <String>[
-        '0-6 months',
-        '6 months to a year',
-        '1 - 2 years',
-        '2 - 10 years',
-        'older'
-      ].map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-      value: dropdownAge,
-    );
-  }
+
 }
 
 // ======== Globals =============ß

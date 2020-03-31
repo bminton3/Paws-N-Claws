@@ -412,30 +412,18 @@ final List<Dogvideo> _trickDogVideos = [
   Dogvideo('Teach Puppy Tricks', 'assets/videos/puppyliedown.mp4',
       'assets/LieDown.PNG'),
   Dogvideo('Paw Trick', 'assets/videos/pawtrick.mp4', 'assets/Shake.PNG'),
-  Dogvideo(
-      'Teach roll over', 'assets/videos/rollover.mp4', 'assets/RollOver.PNG'),
 ];
 
 final List<Dogvideo> _socializationDogVideos = [
-  Dogvideo('Socialize Puppy', 'assets/videos/socializepuppy.mp4',
-      'assets/SocializationResearch.PNG'),
   Dogvideo('Puppy Socialization', 'assets/videos/earlypuppysocialization.mp4',
       'assets/Socialization.PNG'),
 ];
 
 final List<Dogvideo> _funnyDogVideos = [
-  Dogvideo('Funniest Confused Pets', 'assets/videos/funniestconfusedpets.mp4',
-      'assets/Socialization.PNG'),
   Dogvideo('Funny dogs', 'assets/videos/funnydogscrylaughter.mp4',
       'assets/SocializationResearch.PNG'),
-  Dogvideo('Funny dogs talking', 'assets/videos/funnydogstalking.mp4',
-      'assets/Arguing.PNG'),
   Dogvideo('Guilty great dane', 'assets/videos/guiltydane.mp4',
       'assets/antisocialthumbnail.jpg'),
-  Dogvideo('Funny bulldog', 'assets/videos/funnybulldog.mp4',
-      'assets/FunnyBulldogs.PNG'),
-  Dogvideo('Hangry dog Reuben', 'assets/videos/reubenhangrydog.mp4',
-      'assets/HangryDog.PNG'),
 ];
 
 final List<Dogvideo> _localVideos = [
