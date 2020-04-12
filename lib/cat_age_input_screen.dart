@@ -73,7 +73,7 @@ class CatAgeDropDownState extends State<CatAgeDropDown> {
             setState(() {
               print(newValue);
             });
-            Navigator.of(context).pushNamed('/dogVideoPlayer');
+            Navigator.of(context).pushNamed('/catVideoPlayer');
           },
           items: <String>[
             '0-6 months',
@@ -99,7 +99,7 @@ class CatAgeDropDownState extends State<CatAgeDropDown> {
   Widget get submitRatingButton {
     return RaisedButton(
       onPressed: () {
-        Navigator.of(context).pushNamed('/dogVideoPlayer');
+        Navigator.of(context).pushNamed('/catVideoPlayer');
       },
       child: Text('Submit'),
       color: Colors.lightBlue,

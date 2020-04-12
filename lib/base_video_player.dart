@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,52 +6,30 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 
 import 'play_pause_button.dart';
 
-enum videotypes { Tricks, Training, Socialization, Funny, Local }
+enum videotypes { Tricks, Training, Socialization, Funny, Local, Nutrition, Behavior, Hygiene }
 
-class VideoPlayer extends StatefulWidget {
+class VideoPlayerStatefulWidget extends StatefulWidget {
   @override
-  createState() => new VideoPlayerState();
+  createState() => new VideoPlayerStatefulWidgetState();
 }
 
 // TODO inconsistent directory structure in Dogvideo objects
 // TODO implement automatic Dogvideo object creation from asset folder.
 // TODO maybe create a factory pattern to create Dogvideos from the internet vs folders?
 // TODO implement for cat videos, any type of videos, really
-class VideoPlayerState extends State<VideoPlayer> {
+class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
   VideoPlayerController _videoPlayerController1;
   ChewieController _chewieController;
+  ScrollController _scrollController;
+
 
   // currently selected video list
   videotypes selectedVideoType = videotypes.Training;
 
-  ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
-    _videoPlayerController1 =
-        VideoPlayerController.asset('assets/videos/funnydogscrylaughter.mp4');
-    _chewieController = ChewieController(
-      videoPlayerController: _videoPlayerController1,
-      aspectRatio: 3 / 2,
-      autoPlay: true,
-      looping: false,
-      autoInitialize: true,
-      showControls: true,
-
-      // materialProgressColors: ChewieProgressColors(
-      //   playedColor: Colors.red,
-      //   handleColor: Colors.blue,
-      //   backgroundColor: Colors.grey,
-      //   bufferedColor: Colors.lightGreen,
-      // ),
-      // placeholder: Container(
-      //   color: Colors.grey,
-      // ),
-      // autoInitialize: true,
-    );
-
-    _scrollController = ScrollController();
   }
 
   @override
@@ -85,22 +61,7 @@ class VideoPlayerState extends State<VideoPlayer> {
           // side buttons
           Row(
             children: [
-              Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      createSideButton('Tricks'),
-                      Padding(padding: EdgeInsets.all(5.0)),
-                      createSideButton('Training'),
-                      Padding(padding: EdgeInsets.all(5.0)),
-                      createSideButton('Socialization'),
-                      Padding(padding: EdgeInsets.all(5.0)),
-                      createSideButton('Funny Dogs'),
-                      Padding(padding: EdgeInsets.all(5.0)),
-                      createSideButton('Local Info'),
-                      Padding(padding: EdgeInsets.all(5.0)),
-                    ],
-                  )),
+              createSideButtons(),
 
               // video player
               Expanded(
@@ -176,6 +137,11 @@ class VideoPlayerState extends State<VideoPlayer> {
     );
   }
 
+  /// To be overridden by child classes
+  Widget createSideButtons() {
+
+  }
+
   void _moveRight() {
     _scrollController.animateTo(_scrollController.offset + 200,
         curve: Curves.linear, duration: Duration(milliseconds: 500));
@@ -187,43 +153,15 @@ class VideoPlayerState extends State<VideoPlayer> {
   }
 
   /**
-   * Depending on the side button pressed, create a horizontal scroller with previews of videos
+   * To be overidden by subclasses
    */
-  Widget createCustomDynamicHorizontalImageScroller() {
-    switch (selectedVideoType) {
-      case videotypes.Tricks:
-        {
-          return createDynamicHorizontalImageScroller(_trickDogVideos);
-        }
-        break;
-      case videotypes.Training:
-        {
-          return createDynamicHorizontalImageScroller(_trainingDogVideos);
-        }
-        break;
-      case videotypes.Socialization:
-        {
-          return createDynamicHorizontalImageScroller(_socializationDogVideos);
-        }
-        break;
-      case videotypes.Funny:
-        {
-          return createDynamicHorizontalImageScroller(_funnyDogVideos);
-        }
-        break;
-      case videotypes.Local:
-        {
-          return createDynamicHorizontalImageScroller(_localVideos);
-        }
-        break;
-    }
-  }
+  Widget createCustomDynamicHorizontalImageScroller() {  }
 
-  ListView createDynamicHorizontalImageScroller(List<Dogvideo> dogvideos) {
+  ListView createDynamicHorizontalImageScroller(List<PawsVideo> pawsvideos) {
     return ListView.builder(
         controller: _scrollController,
         scrollDirection: Axis.horizontal,
-        itemCount: dogvideos.length,
+        itemCount: pawsvideos.length,
         itemBuilder: (BuildContext ctxt, int index) {
           return Column(children: [
             Container(
@@ -233,19 +171,19 @@ class VideoPlayerState extends State<VideoPlayer> {
               child: GestureDetector(
                   child: Container(
                     child: Image(
-                      image: AssetImage(dogvideos[index].thumbnailPath),
+                      image: AssetImage(pawsvideos[index].thumbnailPath),
                       fit: BoxFit.contain,
                       width: 200,
                     ),
                   ),
                   onTap: () {
                     setState(() {
-                      changeVideo(dogvideos[index].name);
+                      changeVideo(pawsvideos[index].name);
                     });
                   }),
             ),
             Text(
-                dogvideos[index]
+                pawsvideos[index]
                     .thumbnailName, // Maybe use a key/value pair instead?
                 style: TextStyle(
                   fontSize: 22,
@@ -254,39 +192,6 @@ class VideoPlayerState extends State<VideoPlayer> {
                 )),
           ]);
         });
-  }
-
-  /**
-   * No longer used. Dynamic image scroller is used instead.
-   * Keeping because I still want to figure out how to generate a thumbnail dynamically.
-   */
-  ListView createHorizontalImageScroller() {
-    return ListView(
-      controller: _scrollController,
-      scrollDirection: Axis.horizontal,
-      children: <Widget>[
-        Column(children: [
-          Container(
-            width: 200.0,
-            height: 120.0,
-            padding: EdgeInsets.all(5.0),
-            child: Image(
-              image: MemoryImage(_getThumbnail(_trainingDogVideos[0]).then(() {
-                return Uint8List;
-              })),
-              fit: BoxFit.contain,
-              width: 200,
-            ),
-          ),
-          Text('Rollover',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              )),
-        ]),
-      ],
-    );
   }
 
   Widget createSideButton(String text) {
@@ -347,6 +252,26 @@ class VideoPlayerState extends State<VideoPlayer> {
                         selectedVideoType = videotypes.Local;
                       }
                       break;
+                    case 'Funny Cats':
+                      {
+                        selectedVideoType = videotypes.Funny;
+                      }
+                      break;
+                    case 'Nutrition':
+                      {
+                        selectedVideoType = videotypes.Nutrition;
+                      }
+                      break;
+                    case 'Behavior':
+                      {
+                        selectedVideoType = videotypes.Behavior;
+                      }
+                      break;
+                    case 'Hygiene':
+                      {
+                        selectedVideoType = videotypes.Hygiene;
+                      }
+                      break;
                   }
                   _moveRight();
                 });
@@ -397,47 +322,36 @@ class VideoPlayerState extends State<VideoPlayer> {
       border: Border.all(),
     );
   }
+
+  // Getters
+  ChewieController get chewieController => _chewieController;
+
+  ScrollController get scrollController => _scrollController;
+
+  VideoPlayerController get videoPlayerController1 => _videoPlayerController1;
+  // Setters
+  set chewieController(ChewieController value) {
+    _chewieController = value;
+  }
+
+  set scrollController(ScrollController value) {
+    _scrollController = value;
+  }
+
+  set videoPlayerController1(VideoPlayerController value) {
+    _videoPlayerController1 = value;
+  }
 }
 
-final List<Dogvideo> _trainingDogVideos = [
-  Dogvideo('Housetrain', 'assets/videos/housetrain.mp4',
-      'assets/antisocialthumbnail.jpg'), // Training
-  Dogvideo('Aggressive dog', 'assets/videos/aggressivedog.mp4',
-      'assets/Aggression.PNG'), // Training
-  Dogvideo('Potty Training', 'assets/videos/pottytrain.mp4',
-      'assets/pottytraining.PNG'),
-];
-
-final List<Dogvideo> _trickDogVideos = [
-  Dogvideo('Teach Puppy Tricks', 'assets/videos/puppyliedown.mp4',
-      'assets/LieDown.PNG'),
-  Dogvideo('Paw Trick', 'assets/videos/pawtrick.mp4', 'assets/Shake.PNG'),
-];
-
-final List<Dogvideo> _socializationDogVideos = [
-  Dogvideo('Puppy Socialization', 'assets/videos/earlypuppysocialization.mp4',
-      'assets/Socialization.PNG'),
-];
-
-final List<Dogvideo> _funnyDogVideos = [
-  Dogvideo('Funny dogs', 'assets/videos/funnydogscrylaughter.mp4',
-      'assets/SocializationResearch.PNG'),
-  Dogvideo('Guilty great dane', 'assets/videos/guiltydane.mp4',
-      'assets/antisocialthumbnail.jpg'),
-];
-
-final List<Dogvideo> _localVideos = [
-  Dogvideo(
-      'NBA All-Star', 'assets/videos/nbaallstar.mp4', 'assets/AllStar.PNG'),
-  Dogvideo('Residents Fear', 'assets/videos/traffic.mp4', 'assets/Traffic.PNG'),
-  Dogvideo('Hurricane Dorian', 'assets/videos/dorian.mp4',
-      'assets/LocalWeather.PNG'),
-];
-
-class Dogvideo {
-  const Dogvideo(this.thumbnailName, this.name, this.thumbnailPath);
+class PawsVideo {
+  const PawsVideo(this.thumbnailName, this.name, this.thumbnailPath);
 
   final String thumbnailName;
   final String name;
   final String thumbnailPath;
+}
+
+enum VideoType {
+  dog,
+  cat
 }

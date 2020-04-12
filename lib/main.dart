@@ -7,7 +7,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dog_age_input_screen.dart';
 import 'cat_age_input_screen.dart';
 import 'animated_button.dart';
-import 'video_player.dart';
+import 'dog_video_player.dart';
+import 'cat_video_player.dart';
 
 enum pettypes { dog, cat, other }
 
@@ -28,7 +29,8 @@ class MyApp extends StatelessWidget {
         '/dogAgeInput': (BuildContext context) => new DogAgeDropDown(),
         '/catAgeInput': (BuildContext context) => new CatAgeDropDown(),
         '/otherPet': (BuildContext context) => new DogAgeDropDown(),
-        '/dogVideoPlayer': (BuildContext context) => new VideoPlayer(),
+        '/dogVideoPlayer': (BuildContext context) => new DogVideoPlayer(),
+        '/catVideoPlayer': (BuildContext context) => new CatVideoPlayer(),
       },
     );
   }
