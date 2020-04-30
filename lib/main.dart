@@ -62,7 +62,7 @@ class PawsAndClawsState extends State<PawsAndClaws> {
   final List<String> _pets = [
     'assets/dogbuttonresized.png',
     'assets/catbutton.png',
-    //'assets/otherbutton.png'
+    'assets/otherbutton.png'
   ];
 
   final List<Text> _dogBreeds = [
@@ -105,7 +105,7 @@ class PawsAndClawsState extends State<PawsAndClaws> {
       Padding(padding: EdgeInsets.all(ScreenUtil.instance.setWidth(50.0))),
 
       // text above pet buttons
-      Text('What type of best friend do you want?',
+      Text('What type of best friend do you have?',
           style: TextStyle(
             fontSize: ScreenUtil.instance.setSp(100),
             fontFamily: 'Marydale',
@@ -119,59 +119,40 @@ class PawsAndClawsState extends State<PawsAndClaws> {
               ),
             ],
           )),
-//      Text('(tap your pet below)',
-//          style: TextStyle(
-//              fontSize: ScreenUtil.instance.setSp(42.0),
-//              fontFamily: 'Arial',
-//              color: Colors.white)),
+      Text('(tap your pet below)',
+          style: TextStyle(
+              fontSize: ScreenUtil.instance.setSp(42.0),
+              fontFamily: 'Arial',
+              color: Colors.white)),
 
       // pet buttons
-      Column(children: [
-        Row(children: <Widget>[
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(30),
-              width: 500,
-              child: PawsAnimatedButton(_pets[0]),
-            ),
-          ),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(30),
-              width: 500,
-              child: PawsAnimatedButton(_pets[1]),
-            ),
-          )
-        ])
-      ]),
-//      Column(children: [
-//        Row(children: <Widget>[
-//          Container(
-//            alignment: Alignment.center,
-//            width: 480,
-//            height: 120,
-//            child: Text(
-//              'dog',
-//              style: TextStyle(
-//                  fontSize: ScreenUtil.instance.setSp(145.0),
-//                  fontFamily: 'Marydale',
-//                  fontWeight: FontWeight.w700,
-//                  color: Colors.white),
-//            ),
-//          ),
-//          Container(
-//            alignment: Alignment.center,
-//            width: 480,
-//            height: 120,
-//            child: Text('cat',
-//                style: TextStyle(
-//                    fontSize: ScreenUtil.instance.setSp(145.0),
-//                    fontFamily: 'Marydale',
-//                    fontWeight: FontWeight.w700,
-//                    color: Colors.white)),
-//          ),
-//        ])
-//      ])
+      Expanded(
+          child: Column(children: [
+            GridView.count(
+                crossAxisCount: 3,
+                padding: EdgeInsets.only(
+                    left: ScreenUtil.instance.setWidth(50.0),
+                    right: ScreenUtil.instance.setWidth(50.0),
+                    top: ScreenUtil.instance.setWidth(50.0)),
+                mainAxisSpacing: ScreenUtil.instance.setWidth(10.0),
+                crossAxisSpacing: ScreenUtil.instance.setWidth(10.0),
+                shrinkWrap: true,
+                children: _pets.map((String url) {
+                  return GridTile(
+                    // doesn't have size
+                    child: PawsAnimatedButton(url),
+                  );
+                }).toList()),
+            // TODO refactor
+            Container(
+                child: Text(' Dog      Cat     Other',
+                    style: TextStyle(
+                        fontSize: ScreenUtil.instance.setSp(145.0),
+                        fontFamily: 'Marydale',
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white)))
+          ])),
+
     ]);
   }
 
