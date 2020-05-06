@@ -3,12 +3,14 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:my_vet_tv/shared_preferences_helper.dart';
 
 import 'dog_age_input_screen.dart';
 import 'cat_age_input_screen.dart';
 import 'animated_button.dart';
 import 'dog_video_player.dart';
 import 'cat_video_player.dart';
+import 'settings_page.dart';
 
 enum pettypes { dog, cat, other }
 
@@ -31,6 +33,7 @@ class MyApp extends StatelessWidget {
         '/otherPet': (BuildContext context) => new DogAgeDropDown(),
         '/dogVideoPlayer': (BuildContext context) => new DogVideoPlayer(),
         '/catVideoPlayer': (BuildContext context) => new CatVideoPlayer(),
+        '/settingsPage': (BuildContext context) => new SettingsPage(),
       },
     );
   }
@@ -83,9 +86,26 @@ class PawsAndClawsState extends State<PawsAndClaws> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Stack(children: [
-      _buildPetIcons(context),
-      //new FrostedGlassScreensaver(),
+          _buildPetIcons(context),
+          _buildInvisibleSettingsPageButton(context),
+          //new FrostedGlassScreensaver(),
     ]));
+  }
+
+  Widget _buildInvisibleSettingsPageButton(BuildContext context) {
+    return Align(
+        alignment: Alignment.bottomRight,
+        child: Visibility(
+            visible: true,
+            child: GestureDetector(
+              onTap: () {
+                print('tapped');
+                Navigator.of(context).pushNamed('/settingsPage');
+              },
+              child: Container(
+                child: Text('  '),
+              ),
+            )));
   }
 
   // TODO implement OrientationBuilder - do I still need this? This was for autoorientation
@@ -93,19 +113,107 @@ class PawsAndClawsState extends State<PawsAndClaws> {
     return Container(
         // new color
         decoration: BoxDecoration(color: Color(0xEF80D2F5)),
-        child: _buildTappableButtons(context));
+        child: FutureBuilder<String>(
+          future: SharedPreferencesHelper.getLocationSetting(),
+          initialData: 'vet',
+          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          return snapshot.hasData ? _buildTappableButtons(snapshot.data, context) : Container();
+          }));
+  }
+
+  /**
+   * Will this destory the old icons when the user comes back from the settings page?
+   *
+   */
+  Widget _buildTappableButtons(String location, BuildContext context) {
+      switch (location) {
+        case 'vet':
+          {
+            print('building vet buttons');
+            return _buildVetButtons(context);
+          }
+          break;
+        case 'humaneSociety':
+          {
+            print('building humane society buttons');
+            return _buildHumaneSocietyButtons(context);
+          }
+        default: {
+          print('building default vet buttons');
+          return _buildVetButtons(context);
+        }
+      }
   }
 
   /**
    * TODO need to add text above the buttons but columns are fucking impossible
    */
-  Widget _buildTappableButtons(BuildContext context) {
+  Widget _buildVetButtons(BuildContext context) {
     // TODO we may not want a GridView because it's scrollable. May be fun for the users, though
     return Column(children: [
       Padding(padding: EdgeInsets.all(ScreenUtil.instance.setWidth(50.0))),
 
       // text above pet buttons
       Text('What type of best friend do you have?',
+          style: TextStyle(
+            fontSize: ScreenUtil.instance.setSp(100),
+            fontFamily: 'Marydale',
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
+            shadows: [
+              Shadow(
+                blurRadius: 2.0,
+                color: Colors.grey,
+                offset: Offset(2.0, 2.0),
+              ),
+            ],
+          )),
+      Text('(tap your pet below)',
+          style: TextStyle(
+              fontSize: ScreenUtil.instance.setSp(42.0),
+              fontFamily: 'Arial',
+              color: Colors.white)),
+
+      // pet buttons
+      Expanded(
+          child: Column(children: [
+        GridView.count(
+            crossAxisCount: 3,
+            padding: EdgeInsets.only(
+                left: ScreenUtil.instance.setWidth(50.0),
+                right: ScreenUtil.instance.setWidth(50.0),
+                top: ScreenUtil.instance.setWidth(50.0)),
+            mainAxisSpacing: ScreenUtil.instance.setWidth(10.0),
+            crossAxisSpacing: ScreenUtil.instance.setWidth(10.0),
+            shrinkWrap: true,
+            children: _pets.map((String url) {
+              return GridTile(
+                // doesn't have size
+                child: PawsAnimatedButton(url),
+              );
+            }).toList()),
+        // TODO refactor
+        Container(
+            child: Text(' Dog      Cat     Other',
+                style: TextStyle(
+                    fontSize: ScreenUtil.instance.setSp(145.0),
+                    fontFamily: 'Marydale',
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white)))
+      ])),
+    ]);
+  }
+
+  /**
+   * TODO need to add text above the buttons but columns are fucking impossible
+   */
+  Widget _buildHumaneSocietyButtons(BuildContext context) {
+    // TODO we may not want a GridView because it's scrollable. May be fun for the users, though
+    return Column(children: [
+      Padding(padding: EdgeInsets.all(ScreenUtil.instance.setWidth(50.0))),
+
+      // text above pet buttons
+      Text('What type of best friend do you want?',
           style: TextStyle(
             fontSize: ScreenUtil.instance.setSp(100),
             fontFamily: 'Marydale',
@@ -152,7 +260,6 @@ class PawsAndClawsState extends State<PawsAndClaws> {
                         fontWeight: FontWeight.w700,
                         color: Colors.white)))
           ])),
-
     ]);
   }
 
@@ -172,8 +279,6 @@ class PawsAndClawsState extends State<PawsAndClaws> {
       divisions: 4,
     );
   }
-
-
 }
 
 // ======== Globals =============ß
