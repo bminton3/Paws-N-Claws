@@ -9,7 +9,9 @@ import 'shared_preferences_helper.dart';
 
 List<String> pawsLocations = <String> ['vet', 'humaneSociety' ];
 
-
+/**
+ * TODO this is till buggy. The home screen appears to be rendering multiple times.
+ */
 class SettingsPage extends StatefulWidget {
 
   @override

@@ -4,9 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
+import 'frosted_glass.dart';
 import 'play_pause_button.dart';
 
-enum videotypes { Tricks, Training, Socialization, Funny, Local, Nutrition, Behavior, Hygiene }
+enum videotypes {
+  Tricks,
+  Training,
+  Socialization,
+  Funny,
+  Local,
+  Nutrition,
+  Behavior,
+  Hygiene
+}
 
 class VideoPlayerStatefulWidget extends StatefulWidget {
   @override
@@ -22,10 +32,8 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
   ChewieController _chewieController;
   ScrollController _scrollController;
 
-
   // currently selected video list
   videotypes selectedVideoType = videotypes.Training;
-
 
   @override
   void initState() {
@@ -35,112 +43,112 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        // background color
-        color: Color(0xEF80D2F5),
-        child: Column(children: [
-//          Padding(padding: EdgeInsets.all(15.0)),
+        body: Stack(children: [
+          Container(
+            // background color
+            color: Color(0xEF80D2F5),
+            child: Column(children: [
+              //          Padding(padding: EdgeInsets.all(15.0)),
 
-          // back arrow
-//          Row(children: [
-//            GestureDetector(
-//              child:
-//              Container(
-//                  padding: new EdgeInsets.only(left:2.0, top:20.0),
-//                  child: SizedBox(
-//                    height: 50,
-//                    child: Image(
-//                      image: AssetImage('assets/back-arrow.png'),
-//                      fit: BoxFit.contain,
-//                    ),
-//                  )),
-//              onTap:() => Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName))
-//            )
-//          ]),
+              // back arrow
+              //          Row(children: [
+              //            GestureDetector(
+              //              child:
+              //              Container(
+              //                  padding: new EdgeInsets.only(left:2.0, top:20.0),
+              //                  child: SizedBox(
+              //                    height: 50,
+              //                    child: Image(
+              //                      image: AssetImage('assets/back-arrow.png'),
+              //                      fit: BoxFit.contain,
+              //                    ),
+              //                  )),
+              //              onTap:() => Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName))
+              //            )
+              //          ]),
 
-          // side buttons
-          Row(
-            children: [
-              createSideButtons(),
+              // side buttons
+              Row(
+                children: [
+                  createSideButtons(),
 
-              // video player
-              Expanded(
-                child: Container(
-                  padding: new EdgeInsets.all(32),
-                  child: Center(
-                    child: SizedBox(
-                      height: 450,
-                      child: VideoPlayPause(_videoPlayerController1),
+                  // video player
+                  Expanded(
+                    child: Container(
+                      padding: new EdgeInsets.all(32),
+                      child: Center(
+                        child: SizedBox(
+                          height: 450,
+                          child: VideoPlayPause(_videoPlayerController1),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              // bottom horizontal scroller with videos to choose from
+              Row(children: [
+                //Padding(padding: EdgeInsets.only(right: 30.0)),
+
+                // left arrow
+                Expanded(
+                  flex: 1,
+                  child: SizedBox(
+                    width: 100.0,
+                    height: 110.0,
+                    // doesn't have size
+                    child: GestureDetector(
+                      child: Container(
+                        child: Image(
+                          image: AssetImage('assets/leftarrow.jpg'),
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      // TODO there's gotta be a better way to do this
+                      onTap: () => _moveLeft(),
                     ),
                   ),
                 ),
-              ),
-            ],
+
+                // videos
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    width: 650.0,
+                    height: 160.0,
+                    child: createCustomDynamicHorizontalImageScroller(),
+                  ),
+                ),
+
+                // right arrow
+                Expanded(
+                  flex: 1,
+                  child: SizedBox(
+                    width: 100.0,
+                    height: 110.0,
+                    // doesn't have size
+                    child: GestureDetector(
+                      child: Container(
+                        child: Image(
+                          image: AssetImage('assets/rightarrow.jpg'),
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      // TODO there's gotta be a better way to do this
+                      onTap: () => _moveRight(),
+                    ),
+                  ),
+                ),
+              ]),
+            ]),
           ),
-
-          // bottom horizontal scroller with videos to choose from
-          Row(children: [
-            //Padding(padding: EdgeInsets.only(right: 30.0)),
-
-            // left arrow
-            Expanded(
-              flex: 1,
-              child: SizedBox(
-                width: 119.0,
-                height: 130.0,
-                // doesn't have size
-                child: GestureDetector(
-                  child: Container(
-                    child: Image(
-                      image: AssetImage('assets/leftarrow.jpg'),
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                  // TODO there's gotta be a better way to do this
-                  onTap: () => _moveLeft(),
-                ),
-              ),
-            ),
-
-            // videos
-            Expanded(
-              flex: 3,
-              child: Container(
-                width: 650.0,
-                height: 160.0,
-                child: createCustomDynamicHorizontalImageScroller(),
-              ),
-            ),
-
-            // right arrow
-            Expanded(
-              flex: 1,
-              child: SizedBox(
-                width: 119.0,
-                height: 130.0,
-                // doesn't have size
-                child: GestureDetector(
-                  child: Container(
-                    child: Image(
-                      image: AssetImage('assets/rightarrow.jpg'),
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                  // TODO there's gotta be a better way to do this
-                  onTap: () => _moveRight(),
-                ),
-              ),
-            ),
-          ]),
-        ]),
-      ),
-    );
+          new FrostedGlassScreensaver(120),
+        ]));
   }
 
   /// To be overridden by child classes
-  Widget createSideButtons() {
-
-  }
+  Widget createSideButtons() {}
 
   void _moveRight() {
     _scrollController.animateTo(_scrollController.offset + 200,
@@ -155,43 +163,45 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
   /**
    * To be overidden by subclasses
    */
-  Widget createCustomDynamicHorizontalImageScroller() {  }
+  Widget createCustomDynamicHorizontalImageScroller() {}
 
-  ListView createDynamicHorizontalImageScroller(List<PawsVideo> pawsvideos) {
-    return ListView.builder(
-        controller: _scrollController,
-        scrollDirection: Axis.horizontal,
-        itemCount: pawsvideos.length,
-        itemBuilder: (BuildContext ctxt, int index) {
-          return Column(children: [
-            Container(
-              width: 200.0,
-              height: 120.0,
-              padding: EdgeInsets.all(5.0),
-              child: GestureDetector(
-                  child: Container(
-                    child: Image(
-                      image: AssetImage(pawsvideos[index].thumbnailPath),
-                      fit: BoxFit.contain,
-                      width: 200,
-                    ),
-                  ),
-                  onTap: () {
-                    setState(() {
-                      changeVideo(pawsvideos[index].name);
-                    });
-                  }),
-            ),
-            Text(
-                pawsvideos[index]
-                    .thumbnailName, // Maybe use a key/value pair instead?
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                )),
-          ]);
-        });
+  Container createDynamicHorizontalImageScroller(List<PawsVideo> pawsvideos) {
+    return Container(
+        decoration: BoxDecoration(color: Color(0xEF80D2F5)),
+        child: ListView.builder(
+            controller: _scrollController,
+            scrollDirection: Axis.horizontal,
+            itemCount: pawsvideos.length,
+            itemBuilder: (BuildContext ctxt, int index) {
+              return Column(children: [
+                Container(
+                  width: 200.0,
+                  height: 120.0,
+                  padding: EdgeInsets.all(5.0),
+                  child: GestureDetector(
+                      child: Container(
+                        child: Image(
+                          image: AssetImage(pawsvideos[index].thumbnailPath),
+                          fit: BoxFit.contain,
+                          width: 200,
+                        ),
+                      ),
+                      onTap: () {
+                        setState(() {
+                          changeVideo(pawsvideos[index].name);
+                        });
+                      }),
+                ),
+                Text(
+                    pawsvideos[index]
+                        .thumbnailName, // Maybe use a key/value pair instead?
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    )),
+              ]);
+            }));
   }
 
   Widget createSideButton(String text) {
@@ -351,7 +361,4 @@ class PawsVideo {
   final String thumbnailPath;
 }
 
-enum VideoType {
-  dog,
-  cat
-}
+enum VideoType { dog, cat }

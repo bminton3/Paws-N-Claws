@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'frosted_glass.dart';
+
 String dropdownAge = '0-6 months';
 
 class CatAgeDropDown extends StatefulWidget {
@@ -8,16 +10,16 @@ class CatAgeDropDown extends StatefulWidget {
 }
 
 class CatAgeDropDownState extends State<CatAgeDropDown> {
-  // TODO this is code copied over from main to get the same look and feel
   // need to create a framework
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-          // this indigo has a sort of authoritative feeling
-          decoration: BoxDecoration(color: Color(0xEF80D2F5)),
-          child: Center(
-              child: Stack(children: [
+        body: Stack(children: [
+          Container(
+              // this indigo has a sort of authoritative feeling
+              decoration: BoxDecoration(color: Color(0xEF80D2F5)),
+              child: Center(
+                  child: Stack(children: [
                 Positioned(
                   bottom: -25.0,
                   left: -30.0,
@@ -59,8 +61,9 @@ class CatAgeDropDownState extends State<CatAgeDropDown> {
                     ),
                   ),
                 ),
-          ]))),
-    );
+              ]))),
+          new FrostedGlassScreensaver(45),
+    ]));
   }
 
   Widget createAgeDropdown() {

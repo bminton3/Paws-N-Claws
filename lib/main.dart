@@ -10,6 +10,7 @@ import 'cat_age_input_screen.dart';
 import 'animated_button.dart';
 import 'dog_video_player.dart';
 import 'cat_video_player.dart';
+import 'frosted_glass.dart';
 import 'settings_page.dart';
 
 enum pettypes { dog, cat, other }
@@ -88,7 +89,6 @@ class PawsAndClawsState extends State<PawsAndClaws> {
         body: Stack(children: [
           _buildPetIcons(context),
           _buildInvisibleSettingsPageButton(context),
-          //new FrostedGlassScreensaver(),
     ]));
   }
 
