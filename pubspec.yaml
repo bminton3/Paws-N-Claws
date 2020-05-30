@@ -32,6 +32,8 @@ dependencies:
 
   shared_preferences: ^0.4.2
 
+  flutter_downloader: ^1.4.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

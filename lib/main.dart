@@ -12,8 +12,7 @@ import 'dog_video_player.dart';
 import 'cat_video_player.dart';
 import 'frosted_glass.dart';
 import 'settings_page.dart';
-
-enum pettypes { dog, cat, other }
+import 'util.dart';
 
 void main() => runApp(MyApp());
 
@@ -63,33 +62,44 @@ class HomeScreen extends StatelessWidget {
 }
 
 class PawsAndClawsState extends State<PawsAndClaws> {
-  final List<String> _pets = [
-    'assets/dogbuttonresized.png',
-    'assets/catbutton.png',
-    'assets/otherbutton.png'
-  ];
 
-  final List<Text> _dogBreeds = [
-    Text("English Bulldog"),
-    Text("Golden Retriever"),
-    Text("German Shepard"),
-    Text("Black Labrador")
-  ];
-
-  // HACK: Widgets only get rebuilt when there is a change in its state. Slider had to set
-  // an instance variable's value to work
-  double _age = 1;
-
-  // Ideas to get the frosted glass to disappear on tap and reappear after idle:
-  // 1. Make it a stateful widget and have visible a member variable. Who manages bringing it back, though? A timer inside itself?
-  // 2.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(children: [
+//        appBar: PreferredSize(
+//          preferredSize: Size.fromHeight(85.0),
+//          child: AppBar(
+//              elevation: 0.0,
+//              bottomOpacity: 0.0,
+//              backgroundColor: AppBarColor,
+//              title: Align(
+//                  alignment: Alignment.centerLeft,
+//                  child: Container(
+//                    decoration: myBoxDecoration(),
+//                    height: 145,
+//                    width: 275,
+//                    child: Image.asset('assets/pnclogo.png',
+//                        fit: BoxFit.contain),
+//                  ))),
+//        ),
+      body: Column(children: [
+        Container(
+            decoration: BoxDecoration(color: AppBarColor),
+            child: Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  height: 110,
+                  width: 360,
+                  child:
+                      Image.asset('assets/pnclogo1.png', fit: BoxFit.scaleDown),
+                ))),
+        Expanded(
+            child: Stack(children: [
           _buildPetIcons(context),
           _buildInvisibleSettingsPageButton(context),
-    ]));
+        ])),
+      ]),
+    );
   }
 
   Widget _buildInvisibleSettingsPageButton(BuildContext context) {
@@ -108,17 +118,18 @@ class PawsAndClawsState extends State<PawsAndClaws> {
             )));
   }
 
-  // TODO implement OrientationBuilder - do I still need this? This was for autoorientation
   Widget _buildPetIcons(BuildContext context) {
     return Container(
         // new color
         decoration: BoxDecoration(color: Color(0xEF80D2F5)),
         child: FutureBuilder<String>(
-          future: SharedPreferencesHelper.getLocationSetting(),
-          initialData: 'vet',
-          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-          return snapshot.hasData ? _buildTappableButtons(snapshot.data, context) : Container();
-          }));
+            future: SharedPreferencesHelper.getLocationSetting(),
+            initialData: 'vet',
+            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+              return snapshot.hasData
+                  ? _buildTappableButtons(snapshot.data, context)
+                  : Container();
+            }));
   }
 
   /**
@@ -126,23 +137,26 @@ class PawsAndClawsState extends State<PawsAndClaws> {
    *
    */
   Widget _buildTappableButtons(String location, BuildContext context) {
-      switch (location) {
-        case 'vet':
-          {
-            print('building vet buttons');
-            return _buildVetButtons(context);
-          }
-          break;
-        case 'humaneSociety':
-          {
-            print('building humane society buttons');
-            return _buildHumaneSocietyButtons(context);
-          }
-        default: {
+    switch (location) {
+      case 'vet':
+        {
+          print('building vet buttons');
+          return _buildVetButtons(context);
+        }
+        break;
+      case 'humaneSociety':
+        {
+          print('building humane society buttons');
+          return _buildHumaneSocietyButtons(context);
+        }
+        break;
+      default:
+        {
           print('building default vet buttons');
           return _buildVetButtons(context);
         }
-      }
+        break;
+    }
   }
 
   /**
@@ -186,7 +200,7 @@ class PawsAndClawsState extends State<PawsAndClaws> {
             mainAxisSpacing: ScreenUtil.instance.setWidth(10.0),
             crossAxisSpacing: ScreenUtil.instance.setWidth(10.0),
             shrinkWrap: true,
-            children: _pets.map((String url) {
+            children: pets.map((String url) {
               return GridTile(
                 // doesn't have size
                 child: PawsAnimatedButton(url),
@@ -236,49 +250,62 @@ class PawsAndClawsState extends State<PawsAndClaws> {
       // pet buttons
       Expanded(
           child: Column(children: [
-            GridView.count(
-                crossAxisCount: 3,
-                padding: EdgeInsets.only(
-                    left: ScreenUtil.instance.setWidth(50.0),
-                    right: ScreenUtil.instance.setWidth(50.0),
-                    top: ScreenUtil.instance.setWidth(50.0)),
-                mainAxisSpacing: ScreenUtil.instance.setWidth(10.0),
-                crossAxisSpacing: ScreenUtil.instance.setWidth(10.0),
-                shrinkWrap: true,
-                children: _pets.map((String url) {
-                  return GridTile(
-                    // doesn't have size
-                    child: PawsAnimatedButton(url),
-                  );
-                }).toList()),
-            // TODO refactor
-            Container(
-                child: Text(' Dog      Cat     Other',
-                    style: TextStyle(
-                        fontSize: ScreenUtil.instance.setSp(145.0),
-                        fontFamily: 'Marydale',
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white)))
-          ])),
+        GridView.count(
+            crossAxisCount: 3,
+            padding: EdgeInsets.only(
+                left: ScreenUtil.instance.setWidth(50.0),
+                right: ScreenUtil.instance.setWidth(50.0),
+                top: ScreenUtil.instance.setWidth(50.0)),
+            mainAxisSpacing: ScreenUtil.instance.setWidth(10.0),
+            crossAxisSpacing: ScreenUtil.instance.setWidth(10.0),
+            shrinkWrap: true,
+            children: humanebuttons.map((String url) {
+              return GridTile(
+                // doesn't have size
+                child: PawsAnimatedButton(url),
+              );
+            }).toList()),
+        // TODO refactor
+        Container(
+            child: Text(' Dog      Cat     Other',
+                style: TextStyle(
+                    fontSize: ScreenUtil.instance.setSp(145.0),
+                    fontFamily: 'Marydale',
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white)))
+      ])),
     ]);
   }
+}
+// TODO do I need to make the buttons stateful?
+//class MainTappableButtons extends StatefulWidget {
+//  MainTappableButtons({
+//    Key key,
+//    this.locations,
+//  }): super(key: key);
+//  final List<String> locations;
+//
+//  @override
+//  _MainTappableButtonsState createState() => new _MainTappableButtonsState();
+//}
+//
+//class _MainTappableButtonsState extends State<MainTappableButtons> {
+//  @override
+//  void initState(){
+//    super.initState();
+//  }
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return _getContent();
+//  }
+//}
 
-// ======== Age Slider =============
-  Widget createAgeSlider() {
-    return Slider(
-      activeColor: Colors.blueGrey,
-      value: _age,
-      onChanged: (double sliderAge) {
-        setState(() {
-          print('user has clicked the slider!');
-          _age = sliderAge;
-        });
-      },
-      min: 0.0,
-      max: 20.0,
-      divisions: 4,
-    );
-  }
+// for debugging sometimes
+BoxDecoration myBoxDecoration() {
+  return BoxDecoration(
+    border: Border.all(),
+  );
 }
 
 // ======== Globals =============ß

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:my_vet_tv/util.dart';
 
 import 'frosted_glass.dart';
 
-String dropdownAge = '0-6 months';
+String dropdownAge = 'Select one';
+String dropdownBreed = 'Select one';
 
 class CatAgeDropDown extends StatefulWidget {
   @override
@@ -14,55 +16,86 @@ class CatAgeDropDownState extends State<CatAgeDropDown> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(children: [
-          Container(
-              // this indigo has a sort of authoritative feeling
-              decoration: BoxDecoration(color: Color(0xEF80D2F5)),
-              child: Center(
-                  child: Stack(children: [
-                Positioned(
-                  bottom: -25.0,
-                  left: -30.0,
-                  child: Container(
-                    width: 1100,
-                    child: Image(
-                      image: AssetImage('assets/bigCat.png'),
-                    ),
+        body: Column(children: [
+      Container(
+          decoration: BoxDecoration(color: AppBarColor),
+          child: Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                height: 110,
+                width: 360,
+                child: Image.asset('assets/pnclogo1.png', fit: BoxFit.scaleDown),
+              ))),
+      Expanded(
+          child: Stack(children: [
+        Container(
+            decoration: BoxDecoration(color: Color(0xEF80D2F5)),
+            child: Center(
+                child: Stack(children: [
+              Positioned(
+                bottom: -25.0,
+                left: -30.0,
+                child: Container(
+                  width: 950,
+                  child: Image(
+                    image: AssetImage('assets/bigCat.png'),
                   ),
                 ),
-                Positioned(
-                  right: 10.0,
-                  bottom: 325.0,
-                  child: Container(
-                    width: 400,
-                    child: Column(
-                      children: <Widget>[
-                        Padding(padding: EdgeInsets.all(12.0)),
-                        Text('How old is your best friend?',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            )),
-                        Container(
-                          child: Container(
-                            width: 200,
-                            child: createAgeDropdown(),
-                            decoration: ShapeDecoration(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
-                              ),
+              ),
+              Positioned(
+                right: 10.0,
+                bottom: 325.0,
+                child: Container(
+                  width: 400,
+                  child: Column(
+                    children: <Widget>[
+                      Padding(padding: EdgeInsets.all(12.0)),
+                      Text('How old is your best friend?',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          )),
+                      Container(
+                        child: Container(
+                          width: 200,
+                          child: createAgeDropdown(),
+                          decoration: ShapeDecoration(
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      Padding(padding: EdgeInsets.all(12.0)),
+                      Text('What breed is your best friend?',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          )),
+                      Container(
+                        child: Container(
+                          width: 200,
+                          child: createBreedDropdown(),
+                          decoration: ShapeDecoration(
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(10.0)),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ]))),
-          new FrostedGlassScreensaver(45),
+              ),
+            ]))),
+        //new FrostedGlassScreensaver(45),
+      ]))
     ]));
   }
 
@@ -76,9 +109,9 @@ class CatAgeDropDownState extends State<CatAgeDropDown> {
             setState(() {
               print(newValue);
             });
-            Navigator.of(context).pushNamed('/catVideoPlayer');
           },
           items: <String>[
+            'Select one',
             '0-6 months',
             '6 months to a year',
             '1 - 2 years',
@@ -93,6 +126,46 @@ class CatAgeDropDownState extends State<CatAgeDropDown> {
             );
           }).toList(),
           value: dropdownAge,
+        ),
+      ),
+    );
+  }
+
+  Widget createBreedDropdown() {
+    return DropdownButtonHideUnderline(
+      child: ButtonTheme(
+        alignedDropdown: true,
+        child: DropdownButton<String>(
+          onChanged: (newValue) {
+            dropdownBreed = newValue;
+            setState(() {
+              print(newValue);
+            });
+            Navigator.of(context).pushNamed('/dogVideoPlayer');
+          },
+          items: <String>[
+            'Select one',
+            'German Shepherd',
+            'Bulldog',
+            'Labrador Retriever',
+            'Golden Retriever',
+            'Poodle',
+            'Beagle',
+            'Yorkie',
+            'Boxer',
+            'Pug',
+            'Husky',
+            'Chihuahua',
+            'Pointer',
+            'Great Dane',
+            'Mut'
+          ].map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          value: dropdownBreed,
         ),
       ),
     );

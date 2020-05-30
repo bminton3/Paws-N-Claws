@@ -1,6 +1,7 @@
 import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_vet_tv/util.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
@@ -43,108 +44,150 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(children: [
-          Container(
-            // background color
-            color: Color(0xEF80D2F5),
-            child: Column(children: [
-              //          Padding(padding: EdgeInsets.all(15.0)),
-
-              // back arrow
-              //          Row(children: [
-              //            GestureDetector(
-              //              child:
-              //              Container(
-              //                  padding: new EdgeInsets.only(left:2.0, top:20.0),
-              //                  child: SizedBox(
-              //                    height: 50,
-              //                    child: Image(
-              //                      image: AssetImage('assets/back-arrow.png'),
-              //                      fit: BoxFit.contain,
-              //                    ),
-              //                  )),
-              //              onTap:() => Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName))
-              //            )
-              //          ]),
-
-              // side buttons
-              Row(
-                children: [
-                  createSideButtons(),
-
-                  // video player
-                  Expanded(
+      body: Stack(
+        children: [
+          Column(children: [
+            Container(
+                decoration: BoxDecoration(color: AppBarColor),
+                child: Align(
+                    alignment: Alignment.centerLeft,
                     child: Container(
-                      padding: new EdgeInsets.all(32),
-                      child: Center(
+                      height: 110,
+                      width: 360,
+                      child: Image.asset('assets/pnclogo1.png',
+                          fit: BoxFit.scaleDown),
+                    ))),
+            Expanded(
+                child: Stack(children: [
+              Container(
+                padding: EdgeInsets.only(top: 20.0),
+                // background color
+                color: Color(0xEF80D2F5),
+                child: Column(children: [
+                  //          Padding(padding: EdgeInsets.all(15.0)),
+
+                  // back arrow
+                  //          Row(children: [
+                  //            GestureDetector(
+                  //              child:
+                  //              Container(
+                  //                  padding: new EdgeInsets.only(left:2.0, top:20.0),
+                  //                  child: SizedBox(
+                  //                    height: 50,
+                  //                    child: Image(
+                  //                      image: AssetImage('assets/back-arrow.png'),
+                  //                      fit: BoxFit.contain,
+                  //                    ),
+                  //                  )),
+                  //              onTap:() => Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName))
+                  //            )
+                  //          ]),
+
+                  // side buttons
+                  Row(
+                    children: [
+                      createSideButtons(),
+                      // padding between side buttons and video
+                      Padding(padding: EdgeInsets.all(25.0)),
+
+                      // video
+                      Expanded(
+                        child: Stack(children: [
+                          Container(
+//                      padding: new EdgeInsets.all(32),
+                            decoration: videoBorder(),
+                            child: SizedBox(
+                              width: 680,
+                              height: 400,
+                              child: Stack(children: [
+                                VideoPlayPause(_videoPlayerController1),
+                              ]),
+                            ),
+                          ),
+                        ]),
+                      ),
+                    ],
+                  ),
+                  Padding(padding: EdgeInsets.all(35.0)),
+                  // bottom horizontal scroller with videos to choose from
+                  Row(children: [
+                    //Padding(padding: EdgeInsets.only(right: 30.0)),
+
+                    // left arrow
+                    Expanded(
+                      flex: 1,
+                      child: Align(
+                        alignment: Alignment.topRight,
                         child: SizedBox(
-                          height: 450,
-                          child: VideoPlayPause(_videoPlayerController1),
+                          width: 90.0,
+                          height: 90.0,
+                          // doesn't have size
+                          child: GestureDetector(
+                            child: Container(
+                              child: Image(
+                                image: AssetImage('assets/brownarrowleft.png'),
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                            // TODO there's gotta be a better way to do this
+                            onTap: () => _moveLeft(),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+
+                    // horizontal video scroller
+                    Expanded(
+                      flex: 5,
+                      child: Container(
+//                        decoration: videoBorder(),
+                        width: 1000.0,
+                        height: 160.0,
+                        child: createCustomDynamicHorizontalImageScroller(),
+                      ),
+                    ),
+
+                    // right arrow
+                    Expanded(
+                      flex: 1,
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: SizedBox(
+                          width: 90.0,
+                          height: 90.0,
+                          // doesn't have size
+                          child: GestureDetector(
+                            child: Container(
+                              child: Image(
+                                image: AssetImage('assets/brownarrowright.png'),
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                            // TODO there's gotta be a better way to do this
+                            onTap: () => _moveRight(),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]),
+                ]),
               ),
-
-              // bottom horizontal scroller with videos to choose from
-              Row(children: [
-                //Padding(padding: EdgeInsets.only(right: 30.0)),
-
-                // left arrow
-                Expanded(
-                  flex: 1,
-                  child: SizedBox(
-                    width: 100.0,
-                    height: 110.0,
-                    // doesn't have size
-                    child: GestureDetector(
-                      child: Container(
-                        child: Image(
-                          image: AssetImage('assets/leftarrow.jpg'),
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      // TODO there's gotta be a better way to do this
-                      onTap: () => _moveLeft(),
-                    ),
-                  ),
-                ),
-
-                // videos
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    width: 650.0,
-                    height: 160.0,
-                    child: createCustomDynamicHorizontalImageScroller(),
-                  ),
-                ),
-
-                // right arrow
-                Expanded(
-                  flex: 1,
-                  child: SizedBox(
-                    width: 100.0,
-                    height: 110.0,
-                    // doesn't have size
-                    child: GestureDetector(
-                      child: Container(
-                        child: Image(
-                          image: AssetImage('assets/rightarrow.jpg'),
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      // TODO there's gotta be a better way to do this
-                      onTap: () => _moveRight(),
-                    ),
-                  ),
-                ),
-              ]),
-            ]),
+//              new FrostedGlassScreensaver(120),
+            ]))
+          ]),
+          Positioned(
+            right: 30.0,
+            top: -40.0,
+            child: Container(
+              child: Image(
+                image: AssetImage('assets/dogframe.png'),
+                fit: BoxFit.contain,
+              ),
+            ),
           ),
-          new FrostedGlassScreensaver(120),
-        ]));
+        ],
+      ),
+    );
   }
 
   /// To be overridden by child classes
@@ -167,7 +210,7 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
 
   Container createDynamicHorizontalImageScroller(List<PawsVideo> pawsvideos) {
     return Container(
-        decoration: BoxDecoration(color: Color(0xEF80D2F5)),
+//        decoration: BoxDecoration(color: Color(0xEF80D2F5)),
         child: ListView.builder(
             controller: _scrollController,
             scrollDirection: Axis.horizontal,
@@ -175,15 +218,18 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
             itemBuilder: (BuildContext ctxt, int index) {
               return Column(children: [
                 Container(
-                  width: 200.0,
+                  width: 220.0,
                   height: 120.0,
-                  padding: EdgeInsets.all(5.0),
+                  padding: EdgeInsets.all(10.0),
                   child: GestureDetector(
                       child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white, width: 3),
+                        ),
                         child: Image(
                           image: AssetImage(pawsvideos[index].thumbnailPath),
-                          fit: BoxFit.contain,
-                          width: 200,
+                          fit: BoxFit.fill,
+                          width: 220,
                         ),
                       ),
                       onTap: () {
@@ -327,9 +373,10 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
     return uint8list;
   }
 
-  BoxDecoration myBoxDecoration() {
+  BoxDecoration videoBorder() {
     return BoxDecoration(
-      border: Border.all(),
+      border: Border.all(color: const Color(0xFF503731), width: 6),
+      borderRadius: BorderRadius.circular(12),
     );
   }
 
