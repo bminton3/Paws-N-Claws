@@ -33,7 +33,7 @@ class CatAgeDropDownState extends State<CatAgeDropDown> {
             child: Center(
                 child: Stack(children: [
               Positioned(
-                bottom: -25.0,
+                bottom: -10.0,
                 left: -30.0,
                 child: Container(
                   width: 950,
@@ -145,20 +145,21 @@ class CatAgeDropDownState extends State<CatAgeDropDown> {
           },
           items: <String>[
             'Select one',
-            'German Shepherd',
-            'Bulldog',
-            'Labrador Retriever',
-            'Golden Retriever',
-            'Poodle',
-            'Beagle',
-            'Yorkie',
-            'Boxer',
-            'Pug',
-            'Husky',
-            'Chihuahua',
-            'Pointer',
-            'Great Dane',
-            'Mut'
+            'Siamese',
+            'Persian',
+            'Maine Coon',
+            'Ragdoll',
+            'Bengal',
+            'Abyssinian',
+            'Birman',
+            'Oriental Shorthair',
+            'Sphynx',
+            'Devon Rex',
+            'Himalayan',
+            'American Shorthair',
+            'Unknown',
+            'Mixed',
+            'Other'
           ].map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,

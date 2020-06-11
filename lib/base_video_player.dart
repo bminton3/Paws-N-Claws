@@ -11,12 +11,13 @@ import 'play_pause_button.dart';
 enum videotypes {
   Tricks,
   Training,
-  Socialization,
+  GeneralHealth,
   Funny,
-  Local,
+  CareTips,
   Nutrition,
   Behavior,
-  Hygiene
+  Hygiene,
+  HelpfulInfo,
 }
 
 class VideoPlayerStatefulWidget extends StatefulWidget {
@@ -35,6 +36,10 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
 
   // currently selected video list
   videotypes selectedVideoType = videotypes.Training;
+
+  // video list
+  String directory;
+  List file = new List();
 
   @override
   void initState() {
@@ -135,7 +140,7 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
                         ),
                       ),
                     ),
-
+                    Padding(padding: EdgeInsets.all(7.0)),
                     // horizontal video scroller
                     Expanded(
                       flex: 5,
@@ -146,6 +151,7 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
                         child: createCustomDynamicHorizontalImageScroller(),
                       ),
                     ),
+                    Padding(padding: EdgeInsets.all(7.0)),
 
                     // right arrow
                     Expanded(
@@ -210,7 +216,7 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
 
   Container createDynamicHorizontalImageScroller(List<PawsVideo> pawsvideos) {
     return Container(
-//        decoration: BoxDecoration(color: Color(0xEF80D2F5)),
+        decoration: BoxDecoration(color: Color(0xEF80D2F5)),
         child: ListView.builder(
             controller: _scrollController,
             scrollDirection: Axis.horizontal,
@@ -247,7 +253,13 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
                       color: Colors.black,
                     )),
               ]);
-            }));
+            })
+//    child: ListView.builder(
+//          itemCount: file.length,
+//          itemBuilder: (BuildContext context, int index) {
+//            return Text(file[index].toString());
+//          }),
+        );
   }
 
   Widget createSideButton(String text) {
@@ -293,9 +305,9 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
                         selectedVideoType = videotypes.Training;
                       }
                       break;
-                    case 'Socialization':
+                    case 'General Health':
                       {
-                        selectedVideoType = videotypes.Socialization;
+                        selectedVideoType = videotypes.GeneralHealth;
                       }
                       break;
                     case 'Funny Dogs':
@@ -305,7 +317,7 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
                       break;
                     case 'Local Info':
                       {
-                        selectedVideoType = videotypes.Local;
+                        selectedVideoType = videotypes.CareTips;
                       }
                       break;
                     case 'Funny Cats':
@@ -326,6 +338,21 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
                     case 'Hygiene':
                       {
                         selectedVideoType = videotypes.Hygiene;
+                      }
+                      break;
+                    case 'Care Tips':
+                      {
+                        selectedVideoType = videotypes.CareTips;
+                      }
+                      break;
+                    case 'Helpful Info':
+                      {
+                        selectedVideoType = videotypes.HelpfulInfo;
+                      }
+                      break;
+                    case 'Nutritional Info':
+                      {
+                        selectedVideoType = videotypes.Nutrition;
                       }
                       break;
                   }
@@ -363,15 +390,15 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
     super.dispose();
   }
 
-  _getThumbnail(videoPathUrl) async {
-    final uint8list = await VideoThumbnail.thumbnailData(
-      video: videoPathUrl,
-      imageFormat: ImageFormat.JPEG,
-      maxHeightOrWidth: 128,
-      quality: 25,
-    );
-    return uint8list;
-  }
+//  _getThumbnail(videoPathUrl) async {
+//    final uint8list = await VideoThumbnail.thumbnailData(
+//      video: videoPathUrl,
+//      imageFormat: ImageFormat.JPEG,
+//      maxHeightOrWidth: 128,
+//      quality: 25,
+//    );
+//    return uint8list;
+//  }
 
   BoxDecoration videoBorder() {
     return BoxDecoration(

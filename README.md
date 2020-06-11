@@ -19,3 +19,11 @@ How to upload to TestFlight (taken from https://flutter.dev/docs/deployment/ios)
 2. Open Xcode, do product>archive
 3. After creating archive, validate it in the archive popup
 4. Upload it
+
+Adding assets:
+1. Add the asset to the assets folder in the project.
+2. Update pubspec.yaml to include the new assets (if it's a folder).
+
+Flutter sdk not found?
+	Flutter upgrade —force 
+    
