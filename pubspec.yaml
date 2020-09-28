@@ -32,7 +32,17 @@ dependencies:
 
   shared_preferences: ^0.4.2
 
-  flutter_downloader: ^1.4.4
+  uuid: ^2.2.0
+  dio: ^3.0.9
+  http: ^0.12.1
+  archive: ^2.0.13
+
+  flutter_redux: ^0.6.0
+
+  firebase_core: ^0.5.0
+  firebase_storage: ^4.0.0
+  firebase_analytics: ^5.0.2
+  cloud_firestore: ^0.14.0-dev.1
 
 dev_dependencies:
   flutter_test:
@@ -56,25 +66,8 @@ flutter:
   #  - images/a_dot_ham.jpeg
   assets:
     - assets/
-    - assets/videos/
-    - assets/videos/dog/training/trainingthumbnails/
-    - assets/videos/dog/training/
-    - assets/videos/dog/caretips/caretipsthumbnails/
-    - assets/videos/dog/caretips/
-    - assets/videos/dog/funnydogvideos/funnythumbnails/
-    - assets/videos/dog/funnydogvideos/
-    - assets/videos/dog/generalhealth/healththumbnails/
-    - assets/videos/dog/generalhealth/
-    - assets/videos/dog/Tricks/trickthumbnails/
-    - assets/videos/dog/Tricks/
-    - assets/videos/Cat/caretips/catcarethumbnails/
-    - assets/videos/Cat/caretips/
-    - assets/videos/Cat/generalhealth/generalhealththumbnails/
-    - assets/videos/Cat/generalhealth/
-    - assets/videos/Cat/helpfulinfo/cathelpfulinfothumbnails/
-    - assets/videos/Cat/helpfulinfo/
-    - assets/videos/Cat/nutritionalinfo/catnutritionalinfothumbnails/
-    - assets/videos/Cat/nutritionalinfo/
+    - assets/videos/dog/
+    - assets/firebaseMetadata
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

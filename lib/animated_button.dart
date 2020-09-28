@@ -2,11 +2,12 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-
+import 'package:path_provider/path_provider.dart';
 import 'dog_age_input_screen.dart';
 
-class PawsAnimatedButton extends StatefulWidget {
+String _dir;
 
+class PawsAnimatedButton extends StatefulWidget {
   final String url;
 
   PawsAnimatedButton(@required this.url);
@@ -16,11 +17,12 @@ class PawsAnimatedButton extends StatefulWidget {
 }
 
 // ======== Animated button =====ß
-class _PawsAnimatedButtonState extends State<PawsAnimatedButton> with SingleTickerProviderStateMixin {
+class _PawsAnimatedButtonState extends State<PawsAnimatedButton>
+    with SingleTickerProviderStateMixin {
   // field holds the url passed in
   final String url;
 
-  _PawsAnimatedButtonState (@required this.url);
+  _PawsAnimatedButtonState(@required this.url);
 
   double _scale;
   AnimationController _controller;
@@ -56,11 +58,15 @@ class _PawsAnimatedButtonState extends State<PawsAnimatedButton> with SingleTick
       duration: Duration(milliseconds: 50),
       lowerBound: 0.0,
       upperBound: 0.1,
-    )
-      ..addListener(() {
-        Timer(Duration(milliseconds: 50), () { // if this actually works...
-          setState(() {});
-        },);}); // once again, what does .. mean? And I forget what {} vs => means
+    )..addListener(() {
+        Timer(
+          Duration(milliseconds: 50),
+          () {
+            // if this actually works...
+            setState(() {});
+          },
+        );
+      }); // once again, what does .. mean? And I forget what {} vs => means
   }
 
   @override
@@ -77,10 +83,11 @@ class _PawsAnimatedButtonState extends State<PawsAnimatedButton> with SingleTick
     _controller.reverse();
   }
 
-  void _onDogBreedClicked(url) {
-    switch(url) {
+  void _onDogBreedClicked(url) async {
+    switch (url) {
       case 'assets/dogbuttonresized.png':
         Navigator.of(context).pushNamed('/dogAgeInput');
+        await getAppDocumentsDir(); // does this need to have an await??
         break;
       case 'assets/catbutton.png':
         Navigator.of(context).pushNamed('/catAgeInput');
@@ -90,4 +97,13 @@ class _PawsAnimatedButtonState extends State<PawsAnimatedButton> with SingleTick
     }
   }
 
+  Future<void> getAppDocumentsDir() async {
+    if (_dir == null) {
+      _dir = (await getApplicationDocumentsDirectory()).path;
+    }
+  }
+
+  String getFileDir() {
+    return _dir;
+  }
 }

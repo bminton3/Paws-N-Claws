@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:my_vet_tv/download_helper.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'shared_preferences_helper.dart';
@@ -18,6 +19,7 @@ class SettingsPage extends StatefulWidget {
 
 class SettingsPageState extends State<SettingsPage> {
   String locationType = pawsLocations[0];
+  DownloadHelper _downloadHelper = Util().downloadHelper;
 
   @override
   Widget build(BuildContext context) {
@@ -28,36 +30,40 @@ class SettingsPageState extends State<SettingsPage> {
           child: Center(
             child: Column(
               children: <Widget>[
-                Align(
-                  alignment: Alignment.center,
-                  child: ListTile(
-                    title: const Text('Vet\'s office'),
-                    leading: Radio(
-                      value: pawsLocations[0],
-                      groupValue: locationType,
-                      onChanged: (String value) async {
-                        locationType = value;
-                        await SharedPreferencesHelper.setLocationSetting(
-                            locationType);
-                        setState(() {});
-                      },
+                Container(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: ListTile(
+                      title: const Text('Vet\'s office'),
+                      leading: Radio(
+                        value: pawsLocations[0],
+                        groupValue: locationType,
+                        onChanged: (String value) async {
+                          locationType = value;
+                          await SharedPreferencesHelper.setLocationSetting(locationType);
+                          setState(() {});
+                        },
+                      ),
                     ),
-                ),),
-                Align(
-                  alignment: Alignment.center,
-                  child: ListTile(
+                  ),
+                ),
+                Container(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: ListTile(
                       title: const Text('Humane Society'),
                       leading: Radio(
                         value: pawsLocations[1],
                         groupValue: locationType,
                         onChanged: (String value) async {
                           locationType = value;
-                          await SharedPreferencesHelper.setLocationSetting(
-                              locationType);
+                          await SharedPreferencesHelper.setLocationSetting(locationType);
                           setState(() {});
                         },
                       ),
-                    ),),
+                    ),
+                  ),
+                ),
                 FlatButton(
                   onPressed: () {
                     setState(() {});
@@ -67,7 +73,16 @@ class SettingsPageState extends State<SettingsPage> {
                   child: Text(
                     "Apply",
                   ),
-                )
+                ),
+                FlatButton(
+                  onPressed: () {
+                    _downloadHelper.downloadVideosFromFirebase();
+                    setState(() {});
+                  },
+                  child: Text(
+                    "Download Videos",
+                  ),
+                ),
               ],
             ),
           ),

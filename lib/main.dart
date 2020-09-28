@@ -1,6 +1,10 @@
 import 'dart:developer';
 import 'dart:ui';
+import 'dart:async';
+import 'dart:io';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_vet_tv/shared_preferences_helper.dart';
@@ -13,19 +17,43 @@ import 'cat_video_player.dart';
 import 'frosted_glass.dart';
 import 'settings_page.dart';
 import 'util.dart';
+import 'download_helper.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final FirebaseApp app = await Firebase.initializeApp(
+    name: 'pawsnclaws',
+    options: FirebaseOptions(
+      appId:
+          '1:22984768514:ios:ffb14eccdee75482797b1b', // TODO For Android, we'll need a separate app id
+      // app id was found in Firebase Settings under "Your Apps"
+      messagingSenderId: '22984768514', // same as Google Project Number
+      apiKey: 'AIzaSyASg7sH93fOXs4pFMe72g2w1SNcyX51NQI',
+      projectId: 'pawsnclaws-minton',
+    ),
+  );
+  final FirebaseStorage storage =
+      FirebaseStorage(app: app, storageBucket: 'gs://pawsnclaws-minton.appspot.com');
+  StorageReference ref = await storage
+      .getReferenceFromUrl("gs://pawsnclaws-minton.appspot.com/dog/caretips/Allergicreaction.mp4");
+  var url = await ref.getDownloadURL() as String;
+  //String list = await storage.ref().listAll();
+  runApp(MyApp(storage: storage));
+}
 
 /// This Widget is the main application widget.
 class MyApp extends StatelessWidget {
   final String _title = 'Paws and Claws Media';
+  MyApp({this.storage});
+  final FirebaseStorage storage;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: _title,
       theme: ThemeData(fontFamily: 'Marydale'),
-      home: HomeScreen(),
+      home: HomeScreen(storage: storage),
       routes: <String, WidgetBuilder>{
         '/homeScreen': (BuildContext context) => new HomeScreen(),
         '/dogAgeInput': (BuildContext context) => new DogAgeDropDown(),
@@ -40,8 +68,25 @@ class MyApp extends StatelessWidget {
 }
 
 class HomeScreen extends StatelessWidget {
+  HomeScreen({this.storage});
+  final FirebaseStorage storage;
+  // no longer final..does it matter?
+  DownloadHelper _fileDownloader;
+
   @override
   Widget build(BuildContext context) {
+    _fileDownloader = DownloadHelper(storage: storage);
+    // what pattern is this?
+    Util().downloadHelper = _fileDownloader;
+    // download assets from Google
+    // TODO right now this does a number of things, which need to be broken out or less dependent on each other:
+    // 1. Gets the metadata file firebaseMetadata from google
+    // 2. Parses it
+    // 2. Creates PawsVideo objects from each of the lines
+    // 3. Attempts to download any files it sees there from firebase
+    //
+    _fileDownloader.downloadVideosFromFirebase();
+
     log('height:  ${MediaQuery.of(context).size.height}');
     log('width:  ${MediaQuery.of(context).size.width}');
     log('bottom padding: ${MediaQuery.of(context).padding.bottom}');
@@ -56,13 +101,11 @@ class HomeScreen extends StatelessWidget {
       height: defaultScreenHeight,
       allowFontScaling: true,
     )..init(context);
-
-    return PawsAndClaws();
+    return PawsAndClaws(storage: storage);
   }
 }
 
 class PawsAndClawsState extends State<PawsAndClaws> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,8 +133,7 @@ class PawsAndClawsState extends State<PawsAndClaws> {
                 child: Container(
                   height: 110,
                   width: 360,
-                  child:
-                      Image.asset('assets/pnclogo1.png', fit: BoxFit.scaleDown),
+                  child: Image.asset('assets/tailwag.png', fit: BoxFit.scaleDown),
                 ))),
         Expanded(
             child: Stack(children: [
@@ -126,9 +168,7 @@ class PawsAndClawsState extends State<PawsAndClaws> {
             future: SharedPreferencesHelper.getLocationSetting(),
             initialData: 'vet',
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-              return snapshot.hasData
-                  ? _buildTappableButtons(snapshot.data, context)
-                  : Container();
+              return snapshot.hasData ? _buildTappableButtons(snapshot.data, context) : Container();
             }));
   }
 
@@ -184,9 +224,7 @@ class PawsAndClawsState extends State<PawsAndClaws> {
           )),
       Text('(tap your pet below)',
           style: TextStyle(
-              fontSize: ScreenUtil.instance.setSp(42.0),
-              fontFamily: 'Arial',
-              color: Colors.white)),
+              fontSize: ScreenUtil.instance.setSp(42.0), fontFamily: 'Arial', color: Colors.white)),
 
       // pet buttons
       Expanded(
@@ -243,9 +281,7 @@ class PawsAndClawsState extends State<PawsAndClaws> {
           )),
       Text('(tap your pet below)',
           style: TextStyle(
-              fontSize: ScreenUtil.instance.setSp(42.0),
-              fontFamily: 'Arial',
-              color: Colors.white)),
+              fontSize: ScreenUtil.instance.setSp(42.0), fontFamily: 'Arial', color: Colors.white)),
 
       // pet buttons
       Expanded(
@@ -311,6 +347,9 @@ BoxDecoration myBoxDecoration() {
 // ======== Globals =============ß
 // main stateful widget
 class PawsAndClaws extends StatefulWidget {
+  PawsAndClaws({this.storage});
+  final FirebaseStorage storage;
+
   @override
   PawsAndClawsState createState() => PawsAndClawsState();
 }

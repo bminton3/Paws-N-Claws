@@ -25,7 +25,7 @@ class DogAgeDropDownState extends State<DogAgeDropDown> {
               child: Container(
                 height: 110,
                 width: 360,
-                child: Image.asset('assets/pnclogo1.png', fit: BoxFit.scaleDown),
+                child: Image.asset('assets/tailwag.png', fit: BoxFit.scaleDown),
               ))),
       Expanded(
           child: Stack(
@@ -67,8 +67,7 @@ class DogAgeDropDownState extends State<DogAgeDropDown> {
                             decoration: ShapeDecoration(
                               color: Colors.white,
                               shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
+                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
                               ),
                             ),
                           ),
@@ -87,8 +86,7 @@ class DogAgeDropDownState extends State<DogAgeDropDown> {
                             decoration: ShapeDecoration(
                               color: Colors.white,
                               shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
+                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
                               ),
                             ),
                           ),
