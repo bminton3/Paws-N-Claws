@@ -1,16 +1,11 @@
-import 'dart:developer';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_vet_tv/download_helper.dart';
-
-import 'package:shared_preferences/shared_preferences.dart';
 import 'shared_preferences_helper.dart';
 import 'util.dart';
 
 /**
- * TODO this is till buggy. The home screen appears to be rendering multiple times.
+ * TODO this is till buggy. According to logs, the home screen appears to be rendering multiple times.
  */
 class SettingsPage extends StatefulWidget {
   @override
@@ -19,7 +14,39 @@ class SettingsPage extends StatefulWidget {
 
 class SettingsPageState extends State<SettingsPage> {
   String locationType = pawsLocations[0];
-  DownloadHelper _downloadHelper = Util().downloadHelper;
+  SharedPref sharedPref = SharedPref();
+  DownloadHelper _downloadHelper = DownloadHelper();
+
+//  DownloadHelper _downloadHelper = Util().downloadHelper;
+
+  loadSharedPrefs() async {
+    try {
+      DownloadHelper user = DownloadHelper.fromJson(await sharedPref.read('downloadhelper'));
+      Scaffold.of(context).showSnackBar(
+          SnackBar(content: new Text("Loaded!"), duration: const Duration(milliseconds: 500)));
+      setState(() {
+        _downloadHelper = user;
+      });
+    } catch (Excepetion) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+          content: new Text("Nothing found!"), duration: const Duration(milliseconds: 500)));
+    }
+  }
+
+  // What is going on here???
+  @override
+  void initState() {
+    setState(() {
+      SharedPreferencesHelper.getLocationSetting().then((result) {
+        setState(() {
+          // isn't this already a string??
+          print(":: debug result >>>" + result.toString());
+          locationType = result;
+        });
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +67,7 @@ class SettingsPageState extends State<SettingsPage> {
                         groupValue: locationType,
                         onChanged: (String value) async {
                           locationType = value;
+                          // does this work???
                           await SharedPreferencesHelper.setLocationSetting(locationType);
                           setState(() {});
                         },
@@ -57,6 +85,7 @@ class SettingsPageState extends State<SettingsPage> {
                         groupValue: locationType,
                         onChanged: (String value) async {
                           locationType = value;
+                          // does this work???
                           await SharedPreferencesHelper.setLocationSetting(locationType);
                           setState(() {});
                         },
@@ -66,8 +95,8 @@ class SettingsPageState extends State<SettingsPage> {
                 ),
                 FlatButton(
                   onPressed: () {
+                    // WTF??
                     setState(() {});
-
                     Navigator.of(context).pop();
                   },
                   child: Text(
@@ -76,6 +105,7 @@ class SettingsPageState extends State<SettingsPage> {
                 ),
                 FlatButton(
                   onPressed: () {
+                    loadSharedPrefs();
                     _downloadHelper.downloadVideosFromFirebase();
                     setState(() {});
                   },
@@ -89,18 +119,5 @@ class SettingsPageState extends State<SettingsPage> {
         ),
       ),
     );
-  }
-
-  @override
-  void initState() {
-    setState(() {
-      SharedPreferencesHelper.getLocationSetting().then((result) {
-        setState(() {
-          print(":: debug result >>>" + result.toString());
-          locationType = result;
-        });
-      });
-    });
-    super.initState();
   }
 }

@@ -1,7 +1,5 @@
 import 'dart:developer';
 import 'dart:ui';
-import 'dart:async';
-import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -14,7 +12,6 @@ import 'cat_age_input_screen.dart';
 import 'animated_button.dart';
 import 'dog_video_player.dart';
 import 'cat_video_player.dart';
-import 'frosted_glass.dart';
 import 'settings_page.dart';
 import 'util.dart';
 import 'download_helper.dart';
@@ -24,6 +21,7 @@ void main() async {
 
   final FirebaseApp app = await Firebase.initializeApp(
     name: 'pawsnclaws',
+    // Secrets
     options: FirebaseOptions(
       appId:
           '1:22984768514:ios:ffb14eccdee75482797b1b', // TODO For Android, we'll need a separate app id
@@ -33,6 +31,7 @@ void main() async {
       projectId: 'pawsnclaws-minton',
     ),
   );
+  // declaring and assigning our FirebaseStorage object
   final FirebaseStorage storage =
       FirebaseStorage(app: app, storageBucket: 'gs://pawsnclaws-minton.appspot.com');
   StorageReference ref = await storage
@@ -75,9 +74,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _fileDownloader = DownloadHelper(storage: storage);
+    _fileDownloader = new DownloadHelper(storage: storage);
     // what pattern is this?
-    Util().downloadHelper = _fileDownloader;
     // download assets from Google
     // TODO right now this does a number of things, which need to be broken out or less dependent on each other:
     // 1. Gets the metadata file firebaseMetadata from google
@@ -96,13 +94,23 @@ class HomeScreen extends StatelessWidget {
     double defaultScreenWidth = 2048.0;
     double defaultScreenHeight = 1536.0;
     // wtf does ..init do?
-    ScreenUtil.instance = ScreenUtil(
+    ScreenUtil.instance = new ScreenUtil(
       width: defaultScreenWidth,
       height: defaultScreenHeight,
       allowFontScaling: true,
     )..init(context);
     return PawsAndClaws(storage: storage);
   }
+}
+
+// ======== Globals =============ß
+// main stateful widget
+class PawsAndClaws extends StatefulWidget {
+  PawsAndClaws({this.storage});
+  final FirebaseStorage storage;
+
+  @override
+  PawsAndClawsState createState() => PawsAndClawsState();
 }
 
 class PawsAndClawsState extends State<PawsAndClaws> {
@@ -342,16 +350,6 @@ BoxDecoration myBoxDecoration() {
   return BoxDecoration(
     border: Border.all(),
   );
-}
-
-// ======== Globals =============ß
-// main stateful widget
-class PawsAndClaws extends StatefulWidget {
-  PawsAndClaws({this.storage});
-  final FirebaseStorage storage;
-
-  @override
-  PawsAndClawsState createState() => PawsAndClawsState();
 }
 
 //======= Colors ========

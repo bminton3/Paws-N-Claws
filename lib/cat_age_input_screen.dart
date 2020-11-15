@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_vet_tv/util.dart';
 
-import 'frosted_glass.dart';
-
 String dropdownAge = 'Select one';
 String dropdownBreed = 'Select one';
 
@@ -139,7 +137,7 @@ class CatAgeDropDownState extends State<CatAgeDropDown> {
             setState(() {
               print(newValue);
             });
-            Navigator.of(context).pushNamed('/dogVideoPlayer');
+            Navigator.of(context).pushNamed('/catVideoPlayer');
           },
           items: <String>[
             'Select one',

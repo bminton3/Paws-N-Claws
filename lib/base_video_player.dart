@@ -1,14 +1,16 @@
+import 'dart:convert';
+
 import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_vet_tv/shared_preferences_helper.dart';
 import 'package:my_vet_tv/util.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'animated_button.dart';
+import 'dart:developer' as developer;
 
-import 'frosted_glass.dart';
 import 'play_pause_button.dart';
 
 enum videotypes {
@@ -36,8 +38,10 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
   VideoPlayerController _videoPlayerController1;
   ChewieController _chewieController;
   ScrollController _scrollController;
-
-  String _dir = Util().URL;
+  SharedPref sharedPref;
+  Future<dynamic> utilFuture;
+  Util util = Util();
+  String _dir;
 
   // currently selected video list
   videotypes selectedVideoType = videotypes.Training;
@@ -46,9 +50,47 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
   String directory;
   List file = new List();
 
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
+  }
+
   @override
   void initState() {
     super.initState();
+    sharedPref = SharedPref();
+    utilFuture = sharedPref.read('util');
+    var localpath = _localPath;
+    //loadSharedPrefs();
+    // which one of these mfers will work?
+    loadSharedPrefs().then((result) {
+      setState(() {
+        util = result;
+      });
+    });
+  }
+
+  Future<Util> loadSharedPrefs() async {
+    Util user;
+    try {
+      if (_dir == null) {
+        _dir = (await getApplicationDocumentsDirectory()).path;
+      }
+      //type 'List<dynamic>' is not a subtype of type 'List<PawsVideo>'
+      utilFuture = sharedPref.read('util');
+      developer.log("utilFuture: " + utilFuture.toString());
+      user = Util.fromJson(await sharedPref.read('util'));
+      util = user;
+      developer.log("util: " + util.toString());
+      setState(() {
+        util = user;
+      });
+    } catch (Exception) {
+      developer.log("There was an error creating the video objects\n" + Exception);
+      developer.log(Exception.toString());
+    }
+    return user;
   }
 
   @override
@@ -150,10 +192,27 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
                       flex: 5,
                       child: Container(
 //                        decoration: videoBorder(),
-                        width: 1000.0,
-                        height: 160.0,
-                        child: createCustomDynamicHorizontalImageScroller(),
-                      ),
+                          width: 1000.0,
+                          height: 160.0,
+                          // TODO put this whole fucking thing in a futurebuilder
+                          child: FutureBuilder<dynamic>(
+                            future: utilFuture,
+                            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                              if (!snapshot.hasData) {
+                                // while data is loading:
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              } else {
+                                // data loaded
+                                var data = snapshot.data;
+                                util = Util.fromJson(data);
+                                return createCustomDynamicHorizontalImageScroller();
+                              }
+                            },
+                          )
+//                        child: createCustomDynamicHorizontalImageScroller(),
+                          ),
                     ),
                     Padding(padding: EdgeInsets.all(7.0)),
 
@@ -222,7 +281,7 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
    * Actually loads the video files into the selectable horizontal scroller on the bottom of the screen
    * TODO load videos from both assets and downloaded locations
    */
-  Container createDynamicHorizontalImageScroller(List<PawsVideo> pawsvideos) {
+  Container createDynamicHorizontalImageScroller(Map<String, dynamic> pawsvideos) {
     return Container(
         decoration: BoxDecoration(color: Color(0xEF80D2F5)),
         child: ListView.builder(
@@ -230,7 +289,9 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
             scrollDirection: Axis.horizontal,
             itemCount: pawsvideos.length,
             itemBuilder: (BuildContext ctxt, int index) {
+              String key = pawsvideos.keys.elementAt(index);
               return Column(children: [
+                // thumbnails
                 Container(
                   key: Key("$index"),
                   width: 220.0,
@@ -241,7 +302,8 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.white, width: 3),
                         ),
-                        child: Image.file(_getLocalFile(pawsvideos[index].thumbnailPath)),
+                        child: Image.file(
+                            _getLocalFile(_dir + '/' + pawsvideos[key]['thumbnailPath'])),
                       ),
                       onTap: () {
                         // from https://stackoverflow.com/questions/49340116/setstate-called-after-dispose
@@ -249,10 +311,56 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
                           setState(() {
                             debugDumpApp();
                             print('Playing video number $index');
-                            print('playing ' + pawsvideos[index].name + 'video');
-                            changeVideoFile(pawsvideos[index].name);
+                            print('playing ' + pawsvideos[key]['name'] + 'video');
+                            changeVideoFile(_dir + '/' + pawsvideos[key]['name']);
                           });
                         }
+                      }),
+                ),
+                Text(pawsvideos[key]['thumbnailName'], // Maybe use a key/value pair instead?
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    )),
+              ]);
+            })
+//    child: ListView.builder(
+//          itemCount: file.length,
+//          itemBuilder: (BuildContext context, int index) {
+//            return Text(file[index].toString());
+//          }),
+        );
+  }
+
+  Container createDynamicHorizontalImageScrollerForVideoAssets(List<PawsVideo> pawsvideos) {
+    return Container(
+        decoration: BoxDecoration(color: Color(0xEF80D2F5)),
+        child: ListView.builder(
+            controller: _scrollController,
+            scrollDirection: Axis.horizontal,
+            itemCount: pawsvideos.length,
+            itemBuilder: (BuildContext ctxt, int index) {
+              return Column(children: [
+                Container(
+                  width: 220.0,
+                  height: 120.0,
+                  padding: EdgeInsets.all(10.0),
+                  child: GestureDetector(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white, width: 3),
+                        ),
+                        child: Image(
+                          image: AssetImage(pawsvideos[index].thumbnailPath),
+                          fit: BoxFit.fill,
+                          width: 220,
+                        ),
+                      ),
+                      onTap: () {
+                        setState(() {
+                          changeVideoAsset(pawsvideos[index].name);
+                        });
                       }),
                 ),
                 Text(pawsvideos[index].thumbnailName, // Maybe use a key/value pair instead?
@@ -465,12 +573,37 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
 File _getLocalImageFile(String name, String dir) => File('$dir/$name');
 File _getLocalFile(String name) => File(name);
 
-class PawsVideo {
-  const PawsVideo(this.thumbnailName, this.name, this.thumbnailPath);
-
-  final String thumbnailName;
-  final String name;
-  final String thumbnailPath;
+read(String key) async {
+  final prefs = await SharedPreferences.getInstance();
+  return json.decode(prefs.getString(key));
 }
 
-enum VideoType { dog, cat }
+class PawsVideo {
+  // TODO this is slightly off from the examples. Examples don't have this whack constructor
+  PawsVideo(this.thumbnailName, this.name, this.thumbnailPath);
+
+  String thumbnailName;
+  String name;
+  String thumbnailPath;
+
+  PawsVideo.fromJson(Map<String, dynamic> json)
+      : thumbnailName = json['thumbnailName'],
+        name = json['name'],
+        thumbnailPath = json['locathumbnailPathtion'];
+
+  Map<String, dynamic> toJson() =>
+      {'thumbnailName': thumbnailName, 'name': name, 'thumbnailPath': thumbnailPath};
+}
+
+class PawsVideoList {
+  String listName;
+  var pawsVideos = [];
+
+  PawsVideoList();
+
+  PawsVideoList.fromJson(Map<String, dynamic> json)
+      : listName = json['listName'],
+        pawsVideos = json['pawsVideos'];
+
+  Map<String, dynamic> toJson() => {'listName': listName, 'PawsVideoList': pawsVideos};
+}

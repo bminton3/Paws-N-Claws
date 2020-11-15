@@ -1,19 +1,14 @@
-import 'dart:typed_data';
-
 import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
-import 'package:path_provider/path_provider.dart';
-
-import 'play_pause_button.dart';
 import 'base_video_player.dart';
-import 'package:my_vet_tv/util.dart';
 
 bool _debug;
 
 String _dir;
+
+String defaultVideo = 'assets/Dogcar.mp4';
 
 class DogVideoPlayer extends VideoPlayerStatefulWidget {
   @override
@@ -87,7 +82,7 @@ class DogVideoPlayerState extends VideoPlayerStatefulWidgetState {
           if (_debug) {
             debugDumpApp();
           }
-          return createDynamicHorizontalImageScroller(Util().trickdogvideos);
+          return createDynamicHorizontalImageScroller(util.trickdogvideos);
         }
         break;
       case videotypes.Training:
@@ -95,7 +90,7 @@ class DogVideoPlayerState extends VideoPlayerStatefulWidgetState {
           if (_debug) {
             debugDumpApp();
           }
-          return createDynamicHorizontalImageScroller(Util().trainingdogvideos);
+          return createDynamicHorizontalImageScroller(util.trainingdogvideos);
         }
         break;
       case videotypes.GeneralHealth:
@@ -103,7 +98,7 @@ class DogVideoPlayerState extends VideoPlayerStatefulWidgetState {
           if (_debug) {
             debugDumpApp();
           }
-          return createDynamicHorizontalImageScroller(Util().generalhealthdogvideos);
+          return createDynamicHorizontalImageScroller(util.doggeneralhealth);
         }
         break;
       case videotypes.Funny:
@@ -111,7 +106,7 @@ class DogVideoPlayerState extends VideoPlayerStatefulWidgetState {
           if (_debug) {
             debugDumpApp();
           }
-          return createDynamicHorizontalImageScroller(Util().funnydogvideos);
+          return createDynamicHorizontalImageScroller(util.funnydogvideos);
         }
         break;
       case videotypes.CareTips:
@@ -119,7 +114,7 @@ class DogVideoPlayerState extends VideoPlayerStatefulWidgetState {
           if (_debug) {
             debugDumpApp();
           }
-          return createDynamicHorizontalImageScroller(Util().dogcaretips);
+          return createDynamicHorizontalImageScroller(util.dogcaretips);
         }
         break;
       default:
@@ -127,8 +122,6 @@ class DogVideoPlayerState extends VideoPlayerStatefulWidgetState {
     }
   }
 }
-
-String defaultVideo = 'assets/videos/dog/Dogcar.mp4';
 
 final List<PawsVideo> _careTipsVideos = [
   PawsVideo('Get Out of Vehicle', 'assets/videos/dog/Dogcar.mp4', '$_dir/test/Dogincar.JPG'),

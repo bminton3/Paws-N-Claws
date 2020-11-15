@@ -1,14 +1,11 @@
-import 'package:archive/archive.dart';
-import 'package:dio/dio.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:my_vet_tv/base_video_player.dart';
+import 'package:my_vet_tv/shared_preferences_helper.dart';
 import 'dart:async';
 import 'package:path_provider/path_provider.dart';
-import 'dart:io';
+import 'dart:io' as io;
 import 'package:http/http.dart' as http;
 import 'util.dart';
-import 'package:uuid/uuid.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'dart:developer' as developer;
 
 const debug = true;
@@ -18,30 +15,36 @@ const _firebaseMetadata = 'firebaseMetadata';
 
 class DownloadHelper {
   final FirebaseStorage storage;
+
   DownloadHelper({this.storage});
 
-  bool downloading = false;
-  var progressString;
+  // ???
+  DownloadHelper.fromJson(Map<String, dynamic> json) : storage = json['storage'];
+
+  Map<String, dynamic> toJson() => {'storage': storage};
+
+//  _addStringListToSharedPrefs(String key, List<List<String>> videos) async {
+//    SharedPreferences prefs = await SharedPreferences.getInstance();
+//    await prefs.setStringList(key, videos);
+//  }
+//
+//  _addVideoReferencesToSharedPrefs(String currentVideoSection) {
+//    _addStringListToSharedPrefs(currentVideoSection, Util().catnutritionalinfo
+//  }
 
   /// From https://medium.com/@danaya/download-assets-dynamically-in-flutter-16c3472a65e5
   String _dir;
-  List<String> _images;
 
-  Future<String> loadFirebaseMetadataAsset() async {
-    return await rootBundle.loadString('assets/firebaseMetadata');
-  }
+//  Future<String> loadFirebaseMetadataAsset() async {
+//    return await rootBundle.loadString('assets/firebaseMetadata');
+//  }
 
   Future<void> downloadVideosFromFirebase() async {
     if (_dir == null) {
       _dir = (await getApplicationDocumentsDirectory()).path;
-      dir = _dir;
-      Util().setURL(dir);
     }
     // download metadata file from firebase
     List<String> metaDataLines = await downloadFirebaseMetadataAndReadLines();
-
-    // TODO create video objects from metadata
-    createVideoObjectsFromMetadata(metaDataLines);
 
     for (int i = 0; i < metaDataLines.length; i++) {
       List<String> videoParts = metaDataLines[i].split(",");
@@ -54,29 +57,37 @@ class DownloadHelper {
         for (int i = 0; i < videoParts.length; i++) {
           print(videoParts[i]);
           List<String> fileParts = videoParts[i].split("/");
-          //print(fileParts[fileParts.length - 1]);
-          // assumption that one word lines will be separators
           if (fileParts.length > 1) {
-            if (!await fileExists(fileParts[fileParts.length - 1])) {
-              await downloadFirebaseFileToLocal(videoParts[i], fileParts[fileParts.length - 1]);
+            String filename = fileParts[fileParts.length - 1];
+            // looks at the actual local file location to see if it exists. Doesn't check the sharedprefs
+            // filename here is just the end of the firebase url. eg, Allergicreaction.mp4
+            if (!await fileExists(filename)) {
+              await downloadFirebaseFileToLocal(videoParts[i], filename);
             }
           }
         }
       }
     }
+    // was using just for cleanup for some reason???
+//    Util().clearArrays();
+    await createVideoObjectsFromMetadata(metaDataLines);
 
     var metadatafileexists = (await fileExists('firebaseMetadata')).toString();
     print("metadata file exists: " + metadatafileexists);
   }
 
-  void createVideoObjectsFromMetadata(List<String> metaDataLines) {
+  /**
+   * Simply parses the metadata file and builds an array with references to the video locations
+   * Generates the local reference strings for all the files to be downloaded from Firebase
+   */
+  Future<void> createVideoObjectsFromMetadata(List<String> metaDataLines) async {
     var currentVideoSection = "test";
 
     // Parts of a PawsVideo
     var currentVideoTitle;
-    var currentVideoFile;
+    var currentVideoFilename;
     var currentVideoThumbnail;
-
+    // Parsing the metadata file line by line.
     for (int i = 0; i < metaDataLines.length; i++) {
       List<String> videoParts = metaDataLines[i].split(",");
       if (videoParts.length > 1) {
@@ -85,76 +96,119 @@ class DownloadHelper {
           //print(fileParts[fileParts.length - 1]);
           // assumption that one word lines will be separators
           if (fileParts.length > 1) {
-            // First one is the video
+            // First part is the video
             if (i == 0) {
+              // ex: fileName = Arthritis.mp4
               var fileName = fileParts[fileParts.length - 1];
-              currentVideoFile = '$_dir/' + '$fileName';
+              currentVideoFilename = fileName;
+              // Second part is the thumbnail
             } else if (i == 1) {
               var fileName = fileParts[fileParts.length - 1];
-              currentVideoThumbnail = '$_dir/' + '$fileName';
+              currentVideoThumbnail = fileName;
             }
+            // Third part is the title
           } else {
             currentVideoTitle = fileParts[0];
           }
         }
+        // Next section
       } else {
         currentVideoSection = metaDataLines[i];
       }
-      //**
-      buildVideoArrays(
-          currentVideoTitle, currentVideoFile, currentVideoThumbnail, currentVideoSection);
+      //** Now that we have the path to the video, thumbnail, and a title, add it to our array we'll
+      //** reference.
+      await createPawsVideo(
+          currentVideoTitle, currentVideoFilename, currentVideoThumbnail, currentVideoSection);
 
-      currentVideoFile = null;
+      currentVideoFilename = null;
       currentVideoThumbnail = null;
       currentVideoTitle = null;
     }
   }
 
-  void buildVideoArrays(String currentVideoTitle, String currentVideoFile,
-      String currentVideoThumbnail, String currentVideoSection) {
-    // TODO this needs to be more expandable
-    if (currentVideoFile != null && currentVideoThumbnail != null && currentVideoTitle != null) {
-      switch (currentVideoSection) {
-        case 'dogcaretips':
-          developer.log('adding video' + currentVideoTitle + ' to ' + currentVideoSection,
-              name: ClassName + 'buildVideoArrays()');
-          Util()
-              .dogcaretips
-              .add(PawsVideo(currentVideoTitle, currentVideoFile, currentVideoThumbnail));
-          break;
-        case 'funnydogvideos':
-          developer.log('adding video' + currentVideoTitle + ' to ' + currentVideoSection,
-              name: ClassName + 'buildVideoArrays()');
-          Util()
-              .funnydogvideos
-              .add(PawsVideo(currentVideoTitle, currentVideoFile, currentVideoThumbnail));
-          break;
-        case 'doggeneralhealth':
-          developer.log('adding video' + currentVideoTitle + ' to ' + currentVideoSection,
-              name: ClassName + 'buildVideoArrays()');
-          Util()
-              .generalhealthdogvideos
-              .add(PawsVideo(currentVideoTitle, currentVideoFile, currentVideoThumbnail));
-          break;
-        case 'dogtraining':
-          developer.log('adding video' + currentVideoTitle + ' to ' + currentVideoSection,
-              name: ClassName + 'buildVideoArrays()');
-          Util()
-              .trainingdogvideos
-              .add(PawsVideo(currentVideoTitle, currentVideoFile, currentVideoThumbnail));
-          break;
-        default:
-          developer.log('Ended up in the default section of the switch statement',
-              name: ClassName + 'buildVideoArrays()');
-          break;
+  /**
+   * Creates PawsVideo objects out of the parsed Metadata file string.
+   */
+  Future<void> createPawsVideo(String currentVideoTitle, String currentVideoFile,
+      String currentVideoThumbnail, String currentVideoSection) async {
+    SharedPref sharedPref = SharedPref();
+    Util util;
+    try {
+      var prefUtil = await sharedPref.read('util');
+      if (prefUtil == null) {
+        developer.log('Util is still null in shared preferences!');
+        util = Util();
+      } else {
+        developer.log('Pulled Util out of shared prefs. Converting it from json.');
+        util = Util.fromJson(prefUtil);
       }
+
+      // TODO this needs to be more expandable
+      if (currentVideoFile != null &&
+          currentVideoThumbnail != null &&
+          currentVideoTitle != null &&
+          io.File(_dir + '/' + currentVideoFile).existsSync()) {
+        try {
+          developer.log('adding video ' + currentVideoFile + ' to ' + currentVideoSection,
+              name: ClassName + '.buildVideoArrays()');
+          switch (currentVideoSection) {
+            case 'dogcaretips':
+              util.dogcaretips[currentVideoFile] =
+                  PawsVideo(currentVideoTitle, currentVideoFile, currentVideoThumbnail);
+              // PawsVideo(this.thumbnailName, this.name, this.thumbnailPath);
+              break;
+            case 'funnydogvideos':
+              util.funnydogvideos[currentVideoFile] =
+                  PawsVideo(currentVideoTitle, currentVideoFile, currentVideoThumbnail);
+              break;
+            case 'doggeneralhealth':
+              util.doggeneralhealth[currentVideoFile] =
+                  PawsVideo(currentVideoTitle, currentVideoFile, currentVideoThumbnail);
+              break;
+            case 'dogtraining':
+              util.trainingdogvideos[currentVideoFile] =
+                  PawsVideo(currentVideoTitle, currentVideoFile, currentVideoThumbnail);
+              break;
+            case 'dogtricks':
+              util.trickdogvideos[currentVideoFile] =
+                  PawsVideo(currentVideoTitle, currentVideoFile, currentVideoThumbnail);
+              break;
+            case 'catcaretips':
+              util.catcaretips[currentVideoFile] =
+                  PawsVideo(currentVideoTitle, currentVideoFile, currentVideoThumbnail);
+              break;
+            case 'catgeneralhealth':
+              util.generalhealthcatvideos[currentVideoFile] =
+                  PawsVideo(currentVideoTitle, currentVideoFile, currentVideoThumbnail);
+              break;
+            case 'cathelpfulinfo':
+              util.cathelpfulinfo[currentVideoFile] =
+                  PawsVideo(currentVideoTitle, currentVideoFile, currentVideoThumbnail);
+              break;
+            case 'catnutritionalinfo':
+              util.catnutritionalinfo[currentVideoFile] =
+                  PawsVideo(currentVideoTitle, currentVideoFile, currentVideoThumbnail);
+              break;
+            default:
+              developer.log('Ended up in the default section of the switch statement',
+                  name: ClassName + 'buildVideoArrays()');
+              break;
+          }
+          sharedPref.save('util', util);
+        } catch (Exception) {
+          developer.log("There was an error creating the video objects\n" + Exception);
+        }
+      }
+    } catch (Exception) {
+      developer.log("There was an error just loading the shit out of shared prefs\n" + Exception);
+      developer.log(Exception.toString());
     }
   }
 
   Future<bool> fileExists(String file) async {
-    var f = File('$_dir/$file');
+    var f = io.File('$_dir/$file');
     bool fileExists = await f.exists();
-    print(file + " exists: " + fileExists.toString());
+    developer.log('$_dir/$file' + " exists: " + fileExists.toString());
     return f.exists();
   }
 
@@ -164,19 +218,21 @@ class DownloadHelper {
    */
   Future<List<String>> downloadFirebaseMetadataAndReadLines() async {
     //String fbMetadata = await loadFirebaseMetadataAsset();
+    developer.log('downloading metadata file in ',
+        name: ClassName + '.downloadFirebaseMetadataAndReadLines()');
     try {
       StorageReference ref =
           await storage.getReferenceFromUrl("gs://pawsnclaws-minton.appspot.com/firebaseMetadata");
       var url = await ref.getDownloadURL() as String;
       final http.Response downloadData = await http.get(url);
       final String fileContents = downloadData.body;
-      var file = File('$_dir/$_firebaseMetadata');
+      var file = io.File('$_dir/$_firebaseMetadata');
       file.writeAsBytes(downloadData.bodyBytes);
       List<String> metaDataLines = fileContents.split("\n");
       return metaDataLines;
     } catch (Exception) {
       // TODO implement reading from local
-      var file = File('$_dir/$_firebaseMetadata');
+      var file = io.File('$_dir/$_firebaseMetadata');
     }
   }
 
@@ -184,8 +240,9 @@ class DownloadHelper {
     StorageReference ref = await storage.getReferenceFromUrl(fileUrl);
     var url = await ref.getDownloadURL() as String;
     final http.Response downloadData = await http.get(url);
-    var file = File('$_dir/$localFilename');
+    var file = io.File('$_dir/$localFilename');
     file.writeAsBytes(downloadData.bodyBytes);
+    developer.log('Successfully downloaded and saved file: ' + localFilename);
     return true;
   }
 

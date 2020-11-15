@@ -1,7 +1,5 @@
+import 'dart:collection';
 import 'dart:ui';
-
-import 'base_video_player.dart';
-import 'download_helper.dart';
 
 // top bar color across app
 const AppBarColor = const Color(0xFFF3BD40);
@@ -32,22 +30,70 @@ var dir;
 //List<PawsVideo> trainingDogVideos = [];
 //List<PawsVideo> tricksDogVideos = [];
 
-/// Dart singleton. I forget what this is used for
 class Util {
   String fileURL;
   static final Util _instance = Util._internal();
-  String get URL => fileURL;
-  static Map<String, Util> _cache;
-  List<PawsVideo> dogcaretips = [];
-  List<PawsVideo> generalhealthdogvideos = [];
-  List<PawsVideo> trainingdogvideos = [];
-  List<PawsVideo> funnydogvideos = [];
-  List<PawsVideo> trickdogvideos = [];
-  DownloadHelper downloadHelper;
+  // dog videos
+  Map<String, dynamic> dogcaretips;
+  Map<String, dynamic> doggeneralhealth;
+  Map<String, dynamic> trainingdogvideos;
+  Map<String, dynamic> funnydogvideos;
+  Map<String, dynamic> trickdogvideos;
+  // cat videos
+  Map<String, dynamic> catcaretips;
+  Map<String, dynamic> generalhealthcatvideos;
+  Map<String, dynamic> cathelpfulinfo;
+  Map<String, dynamic> catnutritionalinfo;
 
-  factory Util() {
-    return _instance;
+  clearArrays() {
+    // dog videos
+    dogcaretips = Map<String, dynamic>();
+    doggeneralhealth = Map<String, dynamic>();
+    trainingdogvideos = Map<String, dynamic>();
+    funnydogvideos = Map<String, dynamic>();
+    trickdogvideos = Map<String, dynamic>();
+    // cat videos
+    catcaretips = Map<String, dynamic>();
+    generalhealthcatvideos = Map<String, dynamic>();
+    cathelpfulinfo = Map<String, dynamic>();
+    catnutritionalinfo = Map<String, dynamic>();
   }
+
+  Util() {
+    dogcaretips = LinkedHashMap<String, dynamic>();
+    doggeneralhealth = LinkedHashMap<String, dynamic>();
+    trainingdogvideos = LinkedHashMap<String, dynamic>();
+    funnydogvideos = LinkedHashMap<String, dynamic>();
+    trickdogvideos = LinkedHashMap<String, dynamic>();
+
+    catcaretips = LinkedHashMap<String, dynamic>();
+    generalhealthcatvideos = LinkedHashMap<String, dynamic>();
+    cathelpfulinfo = LinkedHashMap<String, dynamic>();
+    catnutritionalinfo = LinkedHashMap<String, dynamic>();
+  }
+
+  Util.fromJson(Map<String, dynamic> json)
+      : dogcaretips = json['dogcaretips'],
+        doggeneralhealth = json['doggeneralhealth'],
+        trainingdogvideos = json['trainingdogvideos'],
+        funnydogvideos = json['funnydogvideos'],
+        trickdogvideos = json['trickdogvideos'],
+        catcaretips = json['catcaretips'],
+        generalhealthcatvideos = json['generalhealthcatvideos'],
+        cathelpfulinfo = json['cathelpfulinfo'],
+        catnutritionalinfo = json['catnutritionalinfo'];
+
+  Map<String, dynamic> toJson() => {
+        'dogcaretips': dogcaretips,
+        'doggeneralhealth': doggeneralhealth,
+        'trainingdogvideos': trainingdogvideos,
+        'funnydogvideos': funnydogvideos,
+        'trickdogvideos': trickdogvideos,
+        'catcaretips': catcaretips,
+        'generalhealthcatvideos': generalhealthcatvideos,
+        'cathelpfulinfo': cathelpfulinfo,
+        'catnutritionalinfo': catnutritionalinfo,
+      };
 
 //  factory Util(String URL) {
 //    if(_cache == null) {
@@ -60,8 +106,4 @@ class Util {
 //  }
 
   Util._internal();
-
-  void setURL(String url) {
-    this.fileURL = url;
-  }
 }

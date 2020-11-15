@@ -16,7 +16,7 @@ TODO:
 How to upload to TestFlight (taken from https://flutter.dev/docs/deployment/ios):
 0. You may need to clean cache folders in /var/folders: sudo rm -dfr *
 1. In app directory, run 'flutter build ios'
-2. Open Xcode, do product>archive
+2. Open Xcode, increment the Build number under Runner>General. then do product>archive
 3. After creating archive, validate it in the archive popup
 4. Upload it
 

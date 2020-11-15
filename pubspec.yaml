@@ -28,9 +28,8 @@ dependencies:
 
   chewie: ^0.9.10
   path_provider: ^1.6.9
-  video_thumbnail: ^0.2.1
 
-  shared_preferences: ^0.4.2
+  shared_preferences: ^0.5.12+4
 
   uuid: ^2.2.0
   dio: ^3.0.9
@@ -66,8 +65,8 @@ flutter:
   #  - images/a_dot_ham.jpeg
   assets:
     - assets/
-    - assets/videos/dog/
     - assets/firebaseMetadata
+    - assets/videos/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
