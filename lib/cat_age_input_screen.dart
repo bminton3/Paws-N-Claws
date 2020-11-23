@@ -108,13 +108,14 @@ class CatAgeDropDownState extends State<CatAgeDropDown> {
           },
           items: <String>[
             'Select one',
-            '0-6 months',
-            '6 months to a year',
-            '1 - 2 years',
-            '2 - 4 years',
-            '4 - 6 years',
-            '6 - 10 years',
-            'older than 10 years'
+            '0-6 Months',
+            '6 months - 1 Year',
+            '1 - 2 Years',
+            '2 - 4 Years',
+            '4 - 6 Years',
+            '6 - 10 Years',
+            '10 - 14 Years',
+            'older than 14 Years'
           ].map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,

@@ -23,6 +23,10 @@ enum videotypes {
   Behavior,
   Hygiene,
   HelpfulInfo,
+  Reptiles,
+  Rabbits,
+  Birds,
+  Rodents,
 }
 
 class VideoPlayerStatefulWidget extends StatefulWidget {
@@ -44,7 +48,7 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
   String _dir;
 
   // currently selected video list
-  videotypes selectedVideoType = videotypes.Training;
+  videotypes selectedVideoType = videotypes.Funny;
 
   // video list
   String directory;
@@ -471,6 +475,31 @@ class VideoPlayerStatefulWidgetState extends State<VideoPlayerStatefulWidget> {
                       case 'Nutritional Info':
                         {
                           selectedVideoType = videotypes.Nutrition;
+                        }
+                        break;
+                      case 'Reptiles':
+                        {
+                          selectedVideoType = videotypes.Reptiles;
+                        }
+                        break;
+                      case 'Rabbits':
+                        {
+                          selectedVideoType = videotypes.Rabbits;
+                        }
+                        break;
+                      case 'Birds':
+                        {
+                          selectedVideoType = videotypes.Birds;
+                        }
+                        break;
+                      case 'Rodents':
+                        {
+                          selectedVideoType = videotypes.Rodents;
+                        }
+                        break;
+                      case 'Funny Pet Videos':
+                        {
+                          selectedVideoType = videotypes.Funny;
                         }
                         break;
                     }

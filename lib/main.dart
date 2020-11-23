@@ -9,9 +9,11 @@ import 'package:my_vet_tv/shared_preferences_helper.dart';
 
 import 'dog_age_input_screen.dart';
 import 'cat_age_input_screen.dart';
+import 'other_age_input_screen.dart';
 import 'animated_button.dart';
 import 'dog_video_player.dart';
 import 'cat_video_player.dart';
+import 'other_video_player.dart';
 import 'settings_page.dart';
 import 'util.dart';
 import 'download_helper.dart';
@@ -57,9 +59,10 @@ class MyApp extends StatelessWidget {
         '/homeScreen': (BuildContext context) => new HomeScreen(),
         '/dogAgeInput': (BuildContext context) => new DogAgeDropDown(),
         '/catAgeInput': (BuildContext context) => new CatAgeDropDown(),
-        '/otherPet': (BuildContext context) => new DogAgeDropDown(),
+        '/otherAgeInput': (BuildContext context) => new OtherAgeDropDown(),
         '/dogVideoPlayer': (BuildContext context) => new DogVideoPlayer(),
         '/catVideoPlayer': (BuildContext context) => new CatVideoPlayer(),
+        '/otherVideoPlayer': (BuildContext context) => new OtherVideoPlayer(),
         '/settingsPage': (BuildContext context) => new SettingsPage(),
       },
     );

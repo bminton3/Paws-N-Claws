@@ -4,12 +4,12 @@ import 'package:my_vet_tv/util.dart';
 String dropdownAge = 'Select one';
 String dropdownBreed = 'Select one';
 
-class DogAgeDropDown extends StatefulWidget {
+class OtherAgeDropDown extends StatefulWidget {
   @override
-  createState() => new DogAgeDropDownState();
+  createState() => new OtherAgeDropDownState();
 }
 
-class DogAgeDropDownState extends State<DogAgeDropDown> {
+class OtherAgeDropDownState extends State<OtherAgeDropDown> {
   // need to create a framework
   @override
   Widget build(BuildContext context) {
@@ -34,12 +34,12 @@ class DogAgeDropDownState extends State<DogAgeDropDown> {
                   child: Stack(children: [
                 Positioned(
                   bottom: -15.0,
-                  left: -10.0,
+                  left: -250.0,
                   child: Container(
                     width: 950,
                     child: Image(
                       fit: BoxFit.scaleDown,
-                      image: AssetImage('assets/bigdog.png'),
+                      image: AssetImage('assets/tailwagbirds.png'),
                     ),
                   ),
                 ),
@@ -51,7 +51,7 @@ class DogAgeDropDownState extends State<DogAgeDropDown> {
                     child: Column(
                       children: <Widget>[
                         Padding(padding: EdgeInsets.all(12.0)),
-                        Text('How old is your best friend?',
+                        Text('Choose your best friend',
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -60,26 +60,7 @@ class DogAgeDropDownState extends State<DogAgeDropDown> {
                         Container(
                           child: Container(
                             width: 200,
-                            child: createAgeDropdown(),
-                            decoration: ShapeDecoration(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(padding: EdgeInsets.all(12.0)),
-                        Text('What breed is your best friend?',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            )),
-                        Container(
-                          child: Container(
-                            width: 200,
-                            child: createBreedDropdown(),
+                            child: otherAnimalDropdown(),
                             decoration: ShapeDecoration(
                               color: Colors.white,
                               shape: RoundedRectangleBorder(
@@ -131,7 +112,7 @@ class DogAgeDropDownState extends State<DogAgeDropDown> {
     );
   }
 
-  Widget createBreedDropdown() {
+  Widget otherAnimalDropdown() {
     return DropdownButtonHideUnderline(
       child: ButtonTheme(
         alignedDropdown: true,
@@ -141,24 +122,18 @@ class DogAgeDropDownState extends State<DogAgeDropDown> {
             setState(() {
               print(newValue);
             });
-            Navigator.of(context).pushNamed('/dogVideoPlayer');
+            Navigator.of(context).pushNamed('/otherVideoPlayer');
           },
           items: <String>[
             'Select one',
-            'German Shepherd',
-            'Bulldog',
-            'Labrador Retriever',
-            'Golden Retriever',
-            'Poodle',
-            'Beagle',
-            'Yorkie',
-            'Boxer',
-            'Pug',
-            'Husky',
-            'Chihuahua',
-            'Pointer',
-            'Great Dane',
-            'mixed breed'
+            'Snake',
+            'Lizard',
+            'Guinea Pig',
+            'Hamster',
+            'Ferret',
+            'Rabbit',
+            'Bird',
+            'Other'
           ].map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,

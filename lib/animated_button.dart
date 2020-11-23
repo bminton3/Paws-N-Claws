@@ -93,7 +93,7 @@ class _PawsAnimatedButtonState extends State<PawsAnimatedButton>
         Navigator.of(context).pushNamed('/catAgeInput');
         break;
       default:
-        Navigator.of(context).pushNamed('/dogAgeInput');
+        Navigator.of(context).pushNamed('/otherAgeInput');
     }
   }
 
