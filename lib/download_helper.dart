@@ -113,7 +113,7 @@ class DownloadHelper {
         }
         // Next section
       } else {
-        currentVideoSection = metaDataLines[i];
+        currentVideoSection = metaDataLines[i].trim();
       }
       //** Now that we have the path to the video, thumbnail, and a title, add it to our array we'll
       //** reference.

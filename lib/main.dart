@@ -34,10 +34,10 @@ void main() async {
   // declaring and assigning our FirebaseStorage object
   final FirebaseStorage storage =
       FirebaseStorage(app: app, storageBucket: 'gs://pawsnclaws-minton.appspot.com');
-  StorageReference ref = await storage
-      .getReferenceFromUrl("gs://pawsnclaws-minton.appspot.com/dog/caretips/Allergicreaction.mp4");
-  var url = await ref.getDownloadURL() as String;
-  //String list = await storage.ref().listAll();
+//  StorageReference ref = await storage
+//      .getReferenceFromUrl("gs://pawsnclaws-minton.appspot.com/dog/caretips/Allergicreaction.mp4");
+//  var url = await ref.getDownloadURL() as String;
+//  //String list = await storage.ref().listAll();
   runApp(MyApp(storage: storage));
 }
 
